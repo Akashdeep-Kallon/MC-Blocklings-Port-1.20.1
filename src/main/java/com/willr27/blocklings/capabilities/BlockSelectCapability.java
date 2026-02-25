@@ -3,12 +3,11 @@ package com.willr27.blocklings.capabilities;
 import com.willr27.blocklings.Blocklings;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.Tag;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -24,21 +23,12 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber(modid = Blocklings.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BlockSelectCapability
 {
-    @CapabilityInject(BlockSelectCapability.class)
-    public static Capability<BlockSelectCapability> CAPABILITY = null;
+    public static final Capability<BlockSelectCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
     /**
      * Whether the player is currently selecting a block.
      */
     public boolean isSelecting = false;
-
-    /**
-     * Registers this capability.
-     */
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(BlockSelectCapability.class, new Storage(), BlockSelectCapability::new);
-    }
 
     @SubscribeEvent
     public static void attachCapabilities(@Nonnull AttachCapabilitiesEvent<Entity> event)
@@ -80,26 +70,8 @@ public class BlockSelectCapability
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
         {
-            return lazyOptional.cast();
+            return cap == CAPABILITY ? lazyOptional.cast() : LazyOptional.empty();
         }
     }
 
-    /**
-     * Not needed.
-     */
-    public static class Storage implements Capability.IStorage<BlockSelectCapability>
-    {
-        @Nullable
-        @Override
-        public Tag writeNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side)
-        {
-            return null;
-        }
-
-        @Override
-        public void readNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side, Tag nbt)
-        {
-
-        }
-    }
 }

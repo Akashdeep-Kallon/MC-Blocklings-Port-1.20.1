@@ -59,6 +59,7 @@ public class Blocklings
 
         modEventBus.addListener(this::setupCommon);
         modEventBus.addListener(this::setupClient);
+        modEventBus.addListener(BlocklingsCapabilities::register);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -73,7 +74,6 @@ public class Blocklings
         ModProxies.init();
         NetworkHandler.init();
         BlocklingsCommands.init();
-        BlocklingsCapabilities.register();
 
         event.enqueueWork(EntityGeneration::init);
     }
