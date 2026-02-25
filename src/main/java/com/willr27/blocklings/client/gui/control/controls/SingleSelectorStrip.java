@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.panels.GridPanel;
@@ -10,7 +10,7 @@ import com.willr27.blocklings.client.gui.properties.GridDefinition;
 import com.willr27.blocklings.client.gui.texture.Texture;
 import com.willr27.blocklings.client.gui.texture.Textures;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -188,7 +188,7 @@ public class SingleSelectorStrip<O> extends Control
         @Override
         public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
         {
-            renderTooltip(matrixStack, mouseX, mouseY, new StringTextComponent(option.toString()));
+            renderTooltip(matrixStack, mouseX, mouseY, new Component(option.toString()));
         }
 
         @Override

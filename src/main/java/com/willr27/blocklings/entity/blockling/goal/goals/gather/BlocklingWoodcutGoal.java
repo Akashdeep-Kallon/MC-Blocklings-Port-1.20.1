@@ -9,12 +9,12 @@ import com.willr27.blocklings.entity.blockling.task.config.range.FloatRangePrope
 import com.willr27.blocklings.entity.blockling.goal.config.whitelist.GoalWhitelist;
 import com.willr27.blocklings.entity.blockling.goal.config.whitelist.Whitelist;
 import com.willr27.blocklings.util.*;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BlockState;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -92,8 +92,8 @@ public class BlocklingWoodcutGoal extends BlocklingGatherGoal
 
         properties.add(minLeavesToLogRatio = new FloatRangeProperty(
                 "689c67a9-8c02-4eac-afff-bdc4eab861c6", this,
-                new BlocklingsTranslationTextComponent("task.property.min_leaves_to_log_ratio.name"),
-                new BlocklingsTranslationTextComponent("task.property.min_leaves_to_log_ratio.desc"),
+                new BlocklingsComponent("task.property.min_leaves_to_log_ratio.name"),
+                new BlocklingsComponent("task.property.min_leaves_to_log_ratio.desc"),
                 MIN_MIN_LEAVES_TO_LOGS_RATIO, MAX_MIN_LEAVES_TO_LOGS_RATIO, BlocklingsConfig.COMMON.defaultMinLeavesToLogRatio.get().floatValue()));
 
         setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));

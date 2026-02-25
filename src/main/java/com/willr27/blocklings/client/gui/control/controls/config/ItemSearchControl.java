@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.config;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.ItemControl;
@@ -15,9 +15,9 @@ import com.willr27.blocklings.client.gui.control.event.events.input.MouseRelease
 import com.willr27.blocklings.client.gui.properties.GridDefinition;
 import com.willr27.blocklings.client.gui.properties.Visibility;
 import com.willr27.blocklings.client.gui.texture.Textures;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import com.willr27.blocklings.util.BlocklingsComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -108,13 +108,13 @@ class ItemSearchControl extends GridPanel
         searchField.setBorderColour(0xff373737);
         searchField.setBorderFocusedColour(searchField.getBorderColour());
 
-        Control itemsContainerContainer = new Control();
+        Control itemsContainerAbstractContainerMenu = new Control();
         addChild(itemsContainerContainer, 1, 0);
         itemsContainerContainer.setWidthPercentage(1.0);
         itemsContainerContainer.setFitHeightToContent(true);
         itemsContainerContainer.setBackgroundColour(searchField.getBorderColour());
 
-        itemsContainer = new FlowPanel();
+        itemsAbstractContainerMenu = new FlowPanel();
         itemsContainer.setParent(itemsContainerContainer);
         itemsContainer.setWidthPercentage(1.0);
         itemsContainer.setFitHeightToContent(true);
@@ -123,7 +123,7 @@ class ItemSearchControl extends GridPanel
 
         tooManyResultsMessage = new TextBlockControl();
         tooManyResultsMessage.setWidthPercentage(1.0);
-        tooManyResultsMessage.setText(new BlocklingsTranslationTextComponent("config.search.too_many_results"));
+        tooManyResultsMessage.setText(new BlocklingsComponent("config.search.too_many_results"));
         tooManyResultsMessage.setShouldRenderShadow(false);
         tooManyResultsMessage.setPadding(2.0, 1.0 ,2.0 ,1.0);
         tooManyResultsMessage.setVerticalContentAlignment(0.5);

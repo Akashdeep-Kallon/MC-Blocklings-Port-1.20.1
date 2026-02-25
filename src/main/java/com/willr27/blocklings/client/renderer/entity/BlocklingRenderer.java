@@ -1,13 +1,13 @@
 package com.willr27.blocklings.client.renderer.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.renderer.entity.layer.BlocklingHeldItemLayer;
 import com.willr27.blocklings.client.renderer.entity.model.BlocklingModel;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 

@@ -1,18 +1,18 @@
 package com.willr27.blocklings.entity.blockling.task.config.range;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.controls.config.IntRangeControl;
 import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -40,7 +40,7 @@ public class IntRangeProperty extends RangeProperty<Integer>
     }
 
     @Override
-    public CompoundNBT writeToNBT(@Nonnull CompoundNBT propertyTag)
+    public CompoundTag writeToNBT(@Nonnull CompoundTag propertyTag)
     {
         propertyTag.putInt("value", value);
 
@@ -48,7 +48,7 @@ public class IntRangeProperty extends RangeProperty<Integer>
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT propertyTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag propertyTag, @Nonnull Version tagVersion)
     {
         value = propertyTag.getInt("value");
 
@@ -56,7 +56,7 @@ public class IntRangeProperty extends RangeProperty<Integer>
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
@@ -66,7 +66,7 @@ public class IntRangeProperty extends RangeProperty<Integer>
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 

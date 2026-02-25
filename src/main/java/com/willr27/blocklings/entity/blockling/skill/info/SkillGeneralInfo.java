@@ -1,8 +1,8 @@
 package com.willr27.blocklings.entity.blockling.skill.info;
 
 import com.willr27.blocklings.entity.blockling.skill.Skill;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
 
@@ -21,13 +21,13 @@ public class SkillGeneralInfo
      * The skill's name's translation text component.
      */
     @Nonnull
-    public final TranslationTextComponent name;
+    public final Component name;
 
     /**
      * The skill's description's translation text component.
      */
     @Nonnull
-    public final TranslationTextComponent desc;
+    public final Component desc;
 
     /**
      * @param type the skill's type.
@@ -36,19 +36,19 @@ public class SkillGeneralInfo
     public SkillGeneralInfo(@Nonnull Skill.Type type, @Nonnull String key)
     {
         this.type = type;
-        this.name = new SkillTranslationTextComponent(key + ".name");
-        this.desc = new SkillTranslationTextComponent(key + ".desc");
+        this.name = new SkillComponent(key + ".name");
+        this.desc = new SkillComponent(key + ".desc");
     }
 
     /**
      * A blocklings translation text component for skills.
      */
-    public static class SkillTranslationTextComponent extends BlocklingsTranslationTextComponent
+    public static class SkillComponent extends BlocklingsComponent
     {
         /**
          * @param key the skill's key.
          */
-        public SkillTranslationTextComponent(String key)
+        public SkillComponent(String key)
         {
             super("skill." + key);
         }

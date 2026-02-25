@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.screen.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.EntityControl;
@@ -25,12 +25,12 @@ import com.willr27.blocklings.entity.blockling.attribute.IModifiable;
 import com.willr27.blocklings.entity.blockling.attribute.IModifier;
 import com.willr27.blocklings.entity.blockling.attribute.Operation;
 import com.willr27.blocklings.item.BlocklingsItems;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -75,12 +75,12 @@ public class StatsScreen extends TabbedScreen
         {
             if (!textFieldControl.getText().trim().isEmpty())
             {
-                blockling.setCustomName(new StringTextComponent(textFieldControl.getText()), true);
+                blockling.setCustomName(new Component(textFieldControl.getText()), true);
             }
             else
             {
                 ITextComponent name = BlocklingsItems.BLOCKLING.get().getName(BlocklingsItems.BLOCKLING.get().getDefaultInstance());
-                blockling.setCustomName(new StringTextComponent(name.getString()), true);
+                blockling.setCustomName(new Component(name.getString()), true);
                 textFieldControl.setText(name.getString());
             }
         });
@@ -101,7 +101,7 @@ public class StatsScreen extends TabbedScreen
         healthBarControl.setVerticalAlignment(0.5);
         healthBarControl.setMarginTop(6.0);
 
-        Control statsContainer = new Control();
+        Control statsAbstractContainerMenu = new Control();
         statsGridPanel.addChild(statsContainer, 1, 0);
         statsContainer.setWidthPercentage(1.0);
         statsContainer.setHeightPercentage(1.0);
@@ -122,7 +122,7 @@ public class StatsScreen extends TabbedScreen
 
         BlocklingAttributes stats = blockling.getStats();
 
-        EnumeratingControl combatStats = new EnumeratingStatControl(new BlocklingsTranslationTextComponent("stats.attack.name"));
+        EnumeratingControl combatStats = new EnumeratingStatControl(new BlocklingsComponent("stats.attack.name"));
         combatStats.setParent(leftStatsControl);
         combatStats.setHorizontalAlignment(0.0);
         combatStats.setVerticalAlignment(0.22);
@@ -141,7 +141,7 @@ public class StatsScreen extends TabbedScreen
                 () -> stats.attackSpeed.displayStringValueFunction.apply(stats.attackSpeed.getValue()),
                 () -> createModifiableFloatAttributeTooltip(stats.attackSpeed, TextFormatting.DARK_PURPLE), false));
 
-        EnumeratingControl defenceStats = new EnumeratingStatControl(new BlocklingsTranslationTextComponent("stats.defence.name"));
+        EnumeratingControl defenceStats = new EnumeratingStatControl(new BlocklingsComponent("stats.defence.name"));
         defenceStats.setParent(leftStatsControl);
         defenceStats.setHorizontalAlignment(0.0);
         defenceStats.setVerticalAlignment(0.72);
@@ -158,7 +158,7 @@ public class StatsScreen extends TabbedScreen
                 () -> stats.knockbackResistance.displayStringValueFunction.apply(stats.knockbackResistance.getValue()),
                 () -> createModifiableFloatAttributeTooltip(stats.knockbackResistance, TextFormatting.YELLOW), false));
 
-        EnumeratingControl gatherStats = new EnumeratingStatControl(new BlocklingsTranslationTextComponent("stats.gathering.name"));
+        EnumeratingControl gatherStats = new EnumeratingStatControl(new BlocklingsComponent("stats.gathering.name"));
         gatherStats.setParent(rightStatsControl);
         gatherStats.setHorizontalAlignment(1.0);
         gatherStats.setVerticalAlignment(0.22);
@@ -175,7 +175,7 @@ public class StatsScreen extends TabbedScreen
                 () -> stats.farmingSpeed.displayStringValueFunction.apply(stats.farmingSpeed.getValue()),
                 () -> createModifiableFloatAttributeTooltip(stats.farmingSpeed, TextFormatting.YELLOW), true));
 
-        EnumeratingControl movementStats = new EnumeratingStatControl(new BlocklingsTranslationTextComponent("stats.movement.name"));
+        EnumeratingControl movementStats = new EnumeratingStatControl(new BlocklingsComponent("stats.movement.name"));
         movementStats.setParent(rightStatsControl);
         movementStats.setHorizontalAlignment(1.0);
         movementStats.setVerticalAlignment(0.72);
@@ -191,39 +191,39 @@ public class StatsScreen extends TabbedScreen
             {
                 List<IReorderingProcessor> tooltip = new ArrayList<>();
 
-                tooltip.add(new StringTextComponent(TextFormatting.GOLD + blockling.getCustomName().getString()).getVisualOrderText());
-                tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("type.natural.name").getString() + TextFormatting.WHITE + blockling.getNaturalBlocklingType().name.getString()).getVisualOrderText());
+                tooltip.add(new Component(TextFormatting.GOLD + blockling.getCustomName().getString()).getVisualOrderText());
+                tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("type.natural.name").getString() + TextFormatting.WHITE + blockling.getNaturalBlocklingType().name.getString()).getVisualOrderText());
 
                 List<String> splitText;
 
                 if (GuiUtil.get().isCrouchKeyDown())
                 {
-                    splitText = GuiUtil.get().split(new BlocklingsTranslationTextComponent("type.natural.desc").getString(), 200);
-                    splitText.stream().map(s -> new StringTextComponent(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
+                    splitText = GuiUtil.get().split(new BlocklingsComponent("type.natural.desc").getString(), 200);
+                    splitText.stream().map(s -> new Component(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
                 }
 
-                splitText = GuiUtil.get().split(new BlocklingsTranslationTextComponent("type." + blockling.getNaturalBlocklingType().key + ".passive").getString(), 200);
-                splitText.stream().map(s -> new StringTextComponent(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
+                splitText = GuiUtil.get().split(new BlocklingsComponent("type." + blockling.getNaturalBlocklingType().key + ".passive").getString(), 200);
+                splitText.stream().map(s -> new Component(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
 
-                tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("type.name").getString() + TextFormatting.WHITE + blockling.getBlocklingType().name.getString()).getVisualOrderText());
+                tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("type.name").getString() + TextFormatting.WHITE + blockling.getBlocklingType().name.getString()).getVisualOrderText());
 
                 if (GuiUtil.get().isCrouchKeyDown())
                 {
-                    splitText = GuiUtil.get().split(new BlocklingsTranslationTextComponent("type.desc").getString(), 200);
-                    splitText.stream().map(s -> new StringTextComponent(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
+                    splitText = GuiUtil.get().split(new BlocklingsComponent("type.desc").getString(), 200);
+                    splitText.stream().map(s -> new Component(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
                 }
 
-                splitText = GuiUtil.get().split(new BlocklingsTranslationTextComponent("type." + blockling.getBlocklingType().key + ".passive").getString(), 200);
-                splitText.stream().map(s -> new StringTextComponent(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
+                splitText = GuiUtil.get().split(new BlocklingsComponent("type." + blockling.getBlocklingType().key + ".passive").getString(), 200);
+                splitText.stream().map(s -> new Component(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
 
-                String foodsString = TextFormatting.GRAY + new BlocklingsTranslationTextComponent("type.foods").getString() + TextFormatting.WHITE + new BlocklingsTranslationTextComponent("type.foods.flowers").getString() + ", ";
+                String foodsString = TextFormatting.GRAY + new BlocklingsComponent("type.foods").getString() + TextFormatting.WHITE + new BlocklingsComponent("type.foods.flowers").getString() + ", ";
                 foodsString += blockling.getBlocklingType().foods.stream().map(food -> food.getDescription().getString()).collect(joining(", "));
                 splitText = GuiUtil.get().split(foodsString, 200);
-                splitText.stream().map(s -> new StringTextComponent(s).getVisualOrderText()).forEach(tooltip::add);
+                splitText.stream().map(s -> new Component(s).getVisualOrderText()).forEach(tooltip::add);
 
                 if (!GuiUtil.get().isCrouchKeyDown())
                 {
-                    tooltip.add(new StringTextComponent(TextFormatting.DARK_GRAY + "" + TextFormatting.ITALIC + new BlocklingsTranslationTextComponent("gui.more_info", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).getString()).getVisualOrderText());
+                    tooltip.add(new Component(TextFormatting.DARK_GRAY + "" + TextFormatting.ITALIC + new BlocklingsComponent("gui.more_info", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).getString()).getVisualOrderText());
                 }
 
                 renderTooltip(matrixStack, mouseX, mouseY, getPixelScaleX(), getPixelScaleY(), tooltip);
@@ -274,7 +274,7 @@ public class StatsScreen extends TabbedScreen
     {
         List<ITextComponent> tooltip = new ArrayList<>();
 
-        tooltip.add(new StringTextComponent(colour + attribute.getDisplayStringValueFunction().apply(attribute.getValue()) + " " + TextFormatting.GRAY + attribute.createTranslation("name").getString()));
+        tooltip.add(new Component(colour + attribute.getDisplayStringValueFunction().apply(attribute.getValue()) + " " + TextFormatting.GRAY + attribute.createTranslation("name").getString()));
 
         appendModifiableFloatAttributeToTooltip(tooltip, attribute, 1);
 
@@ -298,7 +298,7 @@ public class StatsScreen extends TabbedScreen
             }
 
             String sign = modifier.getValue() < 0.0f && modifier.getOperation() == Operation.ADD ? "" : modifier.getValue() < 1.0f && modifier.getOperation() != Operation.ADD ? "" : "+";
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + generate(() -> " ").limit(depth).collect(joining()) + sign + modifier.getDisplayStringValueFunction().apply(modifier.getValue()) + " " + TextFormatting.DARK_GRAY + modifier.getDisplayStringNameSupplier().get()));
+            tooltip.add(new Component(TextFormatting.GRAY + generate(() -> " ").limit(depth).collect(joining()) + sign + modifier.getDisplayStringValueFunction().apply(modifier.getValue()) + " " + TextFormatting.DARK_GRAY + modifier.getDisplayStringNameSupplier().get()));
 
             if (modifier instanceof IModifiable<?>)
             {

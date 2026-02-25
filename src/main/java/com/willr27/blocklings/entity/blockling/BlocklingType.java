@@ -2,22 +2,22 @@ package com.willr27.blocklings.entity.blockling;
 
 import com.willr27.blocklings.config.BlocklingsConfig;
 import com.willr27.blocklings.util.BlocklingsResourceLocation;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.ItemUtil;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -178,7 +178,7 @@ public class BlocklingType
      * The translation text component for the blockling type's name.
      */
     @Nonnull
-    public final TranslationTextComponent name;
+    public final Component name;
 
     /**
      * The chance a blockling can spawn with the current blockling type if all other conditions are met.
@@ -255,7 +255,7 @@ public class BlocklingType
     {
         this.key = key;
         this.entityTexture = new BlocklingsResourceLocation("textures/entity/blockling/blockling_" + key + ".png");
-        this.name = new BlocklingsTranslationTextComponent("type." + key);
+        this.name = new BlocklingsComponent("type." + key);
         this.spawnRateReduction = spawnRateReduction + 1;
     }
 
@@ -519,7 +519,7 @@ public class BlocklingType
      * @return true if the blockling is one of the given dimensions.
      */
     @SafeVarargs
-    private static boolean isInWorld(@Nonnull BlocklingEntity blockling, @Nonnull IWorld world, @Nonnull RegistryKey<World>... worldTypes)
+    private static boolean isInWorld(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull RegistryKey<World>... worldTypes)
     {
         for (RegistryKey<World> worldType : worldTypes)
         {
@@ -538,7 +538,7 @@ public class BlocklingType
      * @return true if the blockling is one of the given biomes.
      */
     @SafeVarargs
-    private static boolean isInBiome(@Nonnull BlocklingEntity blockling, @Nonnull IWorld world, @Nonnull RegistryKey<Biome>... biomes)
+    private static boolean isInBiome(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull RegistryKey<Biome>... biomes)
     {
         for (RegistryKey<Biome> biome : biomes)
         {
@@ -555,7 +555,7 @@ public class BlocklingType
      * @param world the world the blockling is in.
      * @return true if the blockling can see the sky.
      */
-    private static boolean canSeeSky(@Nonnull BlocklingEntity blockling, @Nonnull IWorld world)
+    private static boolean canSeeSky(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world)
     {
         return world.canSeeSky(blockling.blockPosition());
     }
@@ -566,7 +566,7 @@ public class BlocklingType
      * @param blocks the blocks to check for.
      * @return true if the blockling is on one of the given blocks.
      */
-    private static boolean blockBelowIs(@Nonnull BlocklingEntity blockling, @Nonnull IWorld world, @Nonnull Block... blocks)
+    private static boolean blockBelowIs(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull Block... blocks)
     {
         Block testBlock = world.getBlockState(blockling.blockPosition().below()).getBlock();
 
@@ -588,7 +588,7 @@ public class BlocklingType
      * @param blocks the blocks to check for.
      * @return true if the blockling is near one of the given blocks.
      */
-    private static boolean blockNearbyIs(@Nonnull BlocklingEntity blockling, @Nonnull IWorld world, int radius, @Nonnull Block... blocks)
+    private static boolean blockNearbyIs(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, int radius, @Nonnull Block... blocks)
     {
         int startX = (int) blockling.getX() - radius;
         int startY = (int) blockling.getY() - radius;

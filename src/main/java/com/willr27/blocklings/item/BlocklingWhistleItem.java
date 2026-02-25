@@ -5,21 +5,21 @@ import com.willr27.blocklings.sound.BlocklingsSounds;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -71,7 +71,7 @@ public class BlocklingWhistleItem extends Item
      */
     public static void setBlockling(@Nonnull ItemStack stack, @Nonnull BlocklingEntity blockling)
     {
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         tag.putUUID(BLOCKLING_UUID_KEY, blockling.getUUID());
 
         addStackToMap(blockling, stack);
@@ -103,7 +103,7 @@ public class BlocklingWhistleItem extends Item
         {
             for (ItemStack stack : stacks)
             {
-                CompoundNBT stackTag = stack.getTag();
+                CompoundTag stackTag = stack.getTag();
 
                 if (stackTag != null)
                 {
@@ -118,17 +118,17 @@ public class BlocklingWhistleItem extends Item
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand)
+    public ActionResult<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand)
     {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
-            ServerWorld serverWorld = (ServerWorld) world;
+            ServerLevel serverLevel = (ServerLevel) world;
 
             if (stack.hasTag())
             {
-                CompoundNBT stackTag = stack.getTag();
+                CompoundTag stackTag = stack.getTag();
 
                 if (stackTag.hasUUID(BLOCKLING_UUID_KEY))
                 {
@@ -156,7 +156,7 @@ public class BlocklingWhistleItem extends Item
     }
 
     @Override
-    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int something, boolean somethingElse)
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int something, boolean somethingElse)
     {
         super.inventoryTick(stack, world, entity, something, somethingElse);
 
@@ -180,7 +180,7 @@ public class BlocklingWhistleItem extends Item
             }
             else
             {
-                BlocklingEntity blockling = (BlocklingEntity) ((ServerWorld) world).getEntity(stack.getTag().getUUID(BLOCKLING_UUID_KEY));
+                BlocklingEntity blockling = (BlocklingEntity) ((ServerLevel) world).getEntity(stack.getTag().getUUID(BLOCKLING_UUID_KEY));
 
                 if (blockling != null)
                 {
@@ -201,7 +201,7 @@ public class BlocklingWhistleItem extends Item
      */
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    private BlocklingEntity findBlockling(@Nonnull ItemStack stack, @Nonnull ClientWorld world)
+    private BlocklingEntity findBlockling(@Nonnull ItemStack stack, @Nonnull ClientLevel world)
     {
         if (stack.hasTag() && stack.getTag().contains(BLOCKLING_UUID_KEY))
         {
@@ -224,7 +224,7 @@ public class BlocklingWhistleItem extends Item
      */
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    private String findBlocklingName(@Nonnull ItemStack stack, @Nonnull ClientWorld world)
+    private String findBlocklingName(@Nonnull ItemStack stack, @Nonnull ClientLevel world)
     {
         BlocklingEntity blockling = findBlockling(stack, world);
 
@@ -250,7 +250,7 @@ public class BlocklingWhistleItem extends Item
      */
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    private String findBlocklingLocation(@Nonnull ItemStack stack, @Nonnull ClientWorld world)
+    private String findBlocklingLocation(@Nonnull ItemStack stack, @Nonnull ClientLevel world)
     {
         BlocklingEntity blockling = findBlockling(stack, world);
 
@@ -268,14 +268,14 @@ public class BlocklingWhistleItem extends Item
     {
         if (stack.hasTag() && stack.getTag().contains(BLOCKLING_NAME_KEY))
         {
-            return new StringTextComponent(TextFormatting.LIGHT_PURPLE + super.getName(stack).getString() + " (" + stack.getTag().getString(BLOCKLING_NAME_KEY) + ")");
+            return new Component(TextFormatting.LIGHT_PURPLE + super.getName(stack).getString() + " (" + stack.getTag().getString(BLOCKLING_NAME_KEY) + ")");
         }
 
         return super.getName(stack);
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag)
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag)
     {
         if (world != null)
         {
@@ -283,7 +283,7 @@ public class BlocklingWhistleItem extends Item
 
             if (location != null)
             {
-                tooltip.add(new StringTextComponent(TextFormatting.GRAY + new TranslationTextComponent(getDescriptionId() + ".location").getString() + location));
+                tooltip.add(new Component(TextFormatting.GRAY + new Component(getDescriptionId() + ".location").getString() + location));
             }
         }
 

@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
@@ -11,9 +11,9 @@ import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.vector.Matrix4f;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -36,7 +36,7 @@ public class TextFieldControl extends Control
      * The underlying {@link TextFieldWidget};
      */
     @Nonnull
-    protected final TextFieldWidget textFieldWidget = new TextFieldWidget(Minecraft.getInstance().font, 0, 0, 100, GuiUtil.get().getLineHeight() - 1, new StringTextComponent("message?"));
+    protected final TextFieldWidget textFieldWidget = new TextFieldWidget(Minecraft.getInstance().font, 0, 0, 100, GuiUtil.get().getLineHeight() - 1, new Component("message?"));
 
     /**
      * The amount to offset the text field's x position by.

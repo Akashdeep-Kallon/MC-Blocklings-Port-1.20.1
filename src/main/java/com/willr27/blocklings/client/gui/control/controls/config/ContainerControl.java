@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.config;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.Blocklings;
 import com.willr27.blocklings.capabilities.BlockSelectCapability;
@@ -19,21 +19,21 @@ import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.entity.blockling.goal.config.ContainerInfo;
 import com.willr27.blocklings.util.BlockUtil;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.event.ValueChangedEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.vector.Quaternion;
+import net.minecraft.core.vector.Vector3f;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -157,7 +157,7 @@ public class ContainerControl extends GridPanel
             @Override
             public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
-                renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsTranslationTextComponent("config.container.remove", new ItemStack(containerInfo.getBlock()).getHoverName().getString()));
+                renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.container.remove", new ItemStack(containerInfo.getBlock()).getHoverName().getString()));
             }
 
             @Override
@@ -257,7 +257,7 @@ public class ContainerControl extends GridPanel
 
         name = new TextBlockControl();
         nameGrid.addChild(name, 0, 0);
-        name.setText(new BlocklingsTranslationTextComponent("config.container.blank"));
+        name.setText(new BlocklingsComponent("config.container.blank"));
         name.setWidthPercentage(1.0);
         name.setMarginLeft(4.0);
 
@@ -321,7 +321,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl xLabel = new TextBlockControl();
         xGrid.addChild(xLabel, 0, 0);
         xLabel.setFitWidthToContent(true);
-        xLabel.setText(new StringTextComponent("X"));
+        xLabel.setText(new Component("X"));
         xLabel.setMarginLeft(5.0);
         xLabel.setMarginRight(4.0);
         xLabel.setVerticalAlignment(0.5);
@@ -329,7 +329,7 @@ public class ContainerControl extends GridPanel
         xLocation = new IntFieldControl();
         xGrid.addChild(xLocation, 0, 1);
         xLocation.setWidthPercentage(1.0);
-        xLocation.setText(new StringTextComponent("1000"));
+        xLocation.setText(new Component("1000"));
         xLocation.setHorizontalContentAlignment(0.5);
         xLocation.setHeight(16.0);
         xLocation.setValue(containerInfo.getX());
@@ -352,7 +352,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl yLabel = new TextBlockControl();
         yGrid.addChild(yLabel, 0, 0);
         yLabel.setFitWidthToContent(true);
-        yLabel.setText(new StringTextComponent("Y"));
+        yLabel.setText(new Component("Y"));
         yLabel.setMarginLeft(5.0);
         yLabel.setMarginRight(4.0);
         yLabel.setVerticalAlignment(0.5);
@@ -360,7 +360,7 @@ public class ContainerControl extends GridPanel
         yLocation = new IntFieldControl();
         yGrid.addChild(yLocation, 0, 1);
         yLocation.setWidthPercentage(1.0);
-        yLocation.setText(new StringTextComponent("1000"));
+        yLocation.setText(new Component("1000"));
         yLocation.setHorizontalContentAlignment(0.5);
         yLocation.setHeight(16.0);
         yLocation.setValue(containerInfo.getY());
@@ -383,7 +383,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl zLabel = new TextBlockControl();
         zGrid.addChild(zLabel, 0, 0);
         zLabel.setFitWidthToContent(true);
-        zLabel.setText(new StringTextComponent("Z"));
+        zLabel.setText(new Component("Z"));
         zLabel.setMarginLeft(5.0);
         zLabel.setMarginRight(4.0);
         zLabel.setVerticalAlignment(0.5);
@@ -391,7 +391,7 @@ public class ContainerControl extends GridPanel
         zLocation = new IntFieldControl();
         zGrid.addChild(zLocation, 0, 1);
         zLocation.setWidthPercentage(1.0);
-        zLocation.setText(new StringTextComponent("1000"));
+        zLocation.setText(new Component("1000"));
         zLocation.setHorizontalContentAlignment(0.5);
         zLocation.setHeight(16.0);
         zLocation.setValue(containerInfo.getZ());
@@ -408,36 +408,36 @@ public class ContainerControl extends GridPanel
             public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 Direction mouseOverDirection = getDirectionMouseIsOver();
-                BlocklingsTranslationTextComponent name = new BlocklingsTranslationTextComponent("config.container.side_priority.name");
+                BlocklingsComponent name = new BlocklingsComponent("config.container.side_priority.name");
 
                 if (mouseOverDirection != null)
                 {
                     switch (mouseOverDirection)
                     {
                         case NORTH:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.front")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.front")));
                             break;
                         case SOUTH:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.back")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.back")));
                             break;
                         case WEST:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.left")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.left")));
                             break;
                         case EAST:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.right")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.right")));
                             break;
                         case UP:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.top")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.top")));
                             break;
                         case DOWN:
-                            name.append(new BlocklingsTranslationTextComponent("config.container.side_priority.side", new BlocklingsTranslationTextComponent("direction.bottom")));
+                            name.append(new BlocklingsComponent("config.container.side_priority.side", new BlocklingsComponent("direction.bottom")));
                             break;
                     }
                 }
 
                 List<IReorderingProcessor> tooltip = new ArrayList<>();
                 tooltip.add(name.withStyle(TextFormatting.WHITE).getVisualOrderText());
-                tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.container.side_priority.desc").withStyle(TextFormatting.GRAY), 200));
+                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.container.side_priority.desc").withStyle(TextFormatting.GRAY), 200));
 
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }
@@ -584,7 +584,7 @@ public class ContainerControl extends GridPanel
      * @param blockPos the block position.
      * @return whether the event should be cancelled.
      */
-    private static boolean handleContainerSelect(@Nonnull PlayerEntity player, boolean isFinal, @Nullable BlockPos blockPos)
+    private static boolean handleContainerSelect(@Nonnull Player player, boolean isFinal, @Nullable BlockPos blockPos)
     {
         if (!player.level.isClientSide())
         {

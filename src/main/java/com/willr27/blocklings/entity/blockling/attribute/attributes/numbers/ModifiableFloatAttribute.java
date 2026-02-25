@@ -5,8 +5,8 @@ import com.willr27.blocklings.entity.blockling.attribute.IModifier;
 import com.willr27.blocklings.entity.blockling.attribute.ModifiableAttribute;
 import com.willr27.blocklings.entity.blockling.attribute.Operation;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public class ModifiableFloatAttribute extends ModifiableNumberAttribute<Float>
     }
 
     @Override
-    public CompoundNBT writeToNBT(@Nonnull CompoundNBT attributeTag)
+    public CompoundTag writeToNBT(@Nonnull CompoundTag attributeTag)
     {
         attributeTag.putFloat("base_value", baseValue);
 
@@ -42,7 +42,7 @@ public class ModifiableFloatAttribute extends ModifiableNumberAttribute<Float>
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT attributeTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag attributeTag, @Nonnull Version tagVersion)
     {
         super.readFromNBT(attributeTag, tagVersion);
 
@@ -50,7 +50,7 @@ public class ModifiableFloatAttribute extends ModifiableNumberAttribute<Float>
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
@@ -58,7 +58,7 @@ public class ModifiableFloatAttribute extends ModifiableNumberAttribute<Float>
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 
@@ -151,13 +151,13 @@ public class ModifiableFloatAttribute extends ModifiableNumberAttribute<Float>
         }
 
         @Override
-        protected void encodeValue(@Nonnull PacketBuffer buf)
+        protected void encodeValue(@Nonnull FriendlyByteBuf buf)
         {
             buf.writeFloat(value);
         }
 
         @Override
-        protected void decodeValue(@Nonnull PacketBuffer buf)
+        protected void decodeValue(@Nonnull FriendlyByteBuf buf)
         {
             value = buf.readFloat();
         }

@@ -2,7 +2,7 @@ package com.willr27.blocklings.client.gui.control.event.events;
 
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.util.event.IEvent;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

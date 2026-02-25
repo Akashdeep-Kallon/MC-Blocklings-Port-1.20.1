@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.config;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
@@ -22,12 +22,12 @@ import com.willr27.blocklings.client.gui.texture.Textures;
 import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.entity.blockling.goal.config.iteminfo.*;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.event.ValueChangedEvent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -234,8 +234,8 @@ public abstract class ItemsConfigurationControl extends Control
                 public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                 {
                     List<IReorderingProcessor> tooltip = new ArrayList<>();
-                    tooltip.add(new BlocklingsTranslationTextComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                    tooltip.add(new BlocklingsTranslationTextComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
                     renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                 }
 
@@ -440,7 +440,7 @@ public abstract class ItemsConfigurationControl extends Control
                     @Override
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsTranslationTextComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
+                        renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
                     }
 
                     @Override
@@ -556,7 +556,7 @@ public abstract class ItemsConfigurationControl extends Control
                 }
             });
 
-            addItemContainer = new Control();
+            addItemAbstractContainerMenu = new Control();
             addItemContainer.setParent(itemsPanel);
             addItemContainer.setWidthPercentage(1.0);
             addItemContainer.setFitHeightToContent(true);
@@ -580,8 +580,8 @@ public abstract class ItemsConfigurationControl extends Control
                 public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                 {
                     List<IReorderingProcessor> tooltip = new ArrayList<>();
-                    tooltip.add(new BlocklingsTranslationTextComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                    tooltip.add(new BlocklingsTranslationTextComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
                     renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                 }
 
@@ -766,7 +766,7 @@ public abstract class ItemsConfigurationControl extends Control
                     @Override
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsTranslationTextComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
+                        renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
                     }
 
                     @Override
@@ -923,7 +923,7 @@ public abstract class ItemsConfigurationControl extends Control
                 TextBlockControl startText = new TextBlockControl();
                 dropdownGrid.addChild(startText, 0, 0);
                 startText.setWidthPercentage(1.0);
-                startText.setText(new BlocklingsTranslationTextComponent("config.item.start_at"));
+                startText.setText(new BlocklingsComponent("config.item.start_at"));
                 startText.setMarginLeft(4.0);
                 startText.setMarginRight(4.0);
                 startText.setMarginTop(4.0);
@@ -954,8 +954,8 @@ public abstract class ItemsConfigurationControl extends Control
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         List<IReorderingProcessor> tooltip = new ArrayList<>();
-                        tooltip.add(new BlocklingsTranslationTextComponent("config.item.inventory_start_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.item.inventory_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.add(new BlocklingsComponent("config.item.inventory_start_amount.name").getVisualOrderText());
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -990,8 +990,8 @@ public abstract class ItemsConfigurationControl extends Control
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         List<IReorderingProcessor> tooltip = new ArrayList<>();
-                        tooltip.add(new BlocklingsTranslationTextComponent("config.item.container_start_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.item.container_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.add(new BlocklingsComponent("config.item.container_start_amount.name").getVisualOrderText());
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -1014,7 +1014,7 @@ public abstract class ItemsConfigurationControl extends Control
                 TextBlockControl stopText = new TextBlockControl();
                 dropdownGrid.addChild(stopText, 2, 0);
                 stopText.setWidthPercentage(1.0);
-                stopText.setText(new BlocklingsTranslationTextComponent("config.item.stop_at"));
+                stopText.setText(new BlocklingsComponent("config.item.stop_at"));
                 stopText.setMarginLeft(4.0);
                 stopText.setMarginRight(4.0);
                 stopText.setMarginTop(6.0);
@@ -1045,8 +1045,8 @@ public abstract class ItemsConfigurationControl extends Control
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         List<IReorderingProcessor> tooltip = new ArrayList<>();
-                        tooltip.add(new BlocklingsTranslationTextComponent("config.item.inventory_stop_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.item.inventory_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.add(new BlocklingsComponent("config.item.inventory_stop_amount.name").getVisualOrderText());
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -1081,8 +1081,8 @@ public abstract class ItemsConfigurationControl extends Control
                     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         List<IReorderingProcessor> tooltip = new ArrayList<>();
-                        tooltip.add(new BlocklingsTranslationTextComponent("config.item.container_stop_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.item.container_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.add(new BlocklingsComponent("config.item.container_stop_amount.name").getVisualOrderText());
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }

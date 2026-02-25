@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.stats;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.TextBlockControl;
@@ -15,11 +15,11 @@ import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.attribute.Attribute;
 import com.willr27.blocklings.entity.blockling.attribute.BlocklingAttributes;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -115,7 +115,7 @@ public class HealthBarControl extends Control
     public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
     {
         List<ITextComponent> tooltip = StatsScreen.createModifiableFloatAttributeTooltip(blockling.getStats().maxHealth, TextFormatting.DARK_GREEN);
-        tooltip.add(0, new StringTextComponent(TextFormatting.GOLD + new Attribute.AttributeTranslationTextComponent("health.name").getString()));
+        tooltip.add(0, new Component(TextFormatting.GOLD + new Attribute.AttributeComponent("health.name").getString()));
 
         renderTooltip(matrixStack, mouseX, mouseY, tooltip.stream().map(ITextComponent::getVisualOrderText).collect(Collectors.toList()));
     }

@@ -43,7 +43,7 @@ public class AttackAction extends KnownTargetAction
         handAction = actions.createAction(key + "_hand", Authority.BOTH, supplier, true);
         handAction.setCount(-1.0f, false);
 
-        blockling.getStats().addAttribute(recentHand = new EnumAttribute<BlocklingHand>(UUID.randomUUID().toString(), key + "_recent_hand", blockling, BlocklingHand.class, BlocklingHand.BOTH, null, null, true));
+        blockling.getStats().addAttribute(recentInteractionHand = new EnumAttribute<BlocklingHand>(UUID.randomUUID().toString(), key + "_recent_hand", blockling, BlocklingHand.class, BlocklingHand.BOTH, null, null, true));
     }
 
     /**
@@ -52,7 +52,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to try start the action for.
      * @return true if the action was started.
      */
-    public boolean tryStart(BlocklingHand hand)
+    public boolean tryStart(BlocklingInteractionHand hand)
     {
         if (super.tryStart())
         {
@@ -72,7 +72,7 @@ public class AttackAction extends KnownTargetAction
      *
      * @param hand the hand to start the action for.
      */
-    public void start(BlocklingHand hand)
+    public void start(BlocklingInteractionHand hand)
     {
         super.start();
 
@@ -104,7 +104,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to check.
      * @return true if the given hand's action is running.
      */
-    public boolean isRunning(BlocklingHand hand)
+    public boolean isRunning(BlocklingInteractionHand hand)
     {
         if ((hand == BlocklingHand.MAIN && (getRecentHand() == BlocklingHand.MAIN || getRecentHand() == BlocklingHand.BOTH))
          || (hand == BlocklingHand.OFF && (getRecentHand() == BlocklingHand.OFF || getRecentHand() == BlocklingHand.BOTH)))
@@ -119,7 +119,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to check.
      * @return true if the given hand's action has finished.
      */
-    public boolean isFinished(BlocklingHand hand)
+    public boolean isFinished(BlocklingInteractionHand hand)
     {
         if ((hand == BlocklingHand.MAIN && (getRecentHand() == BlocklingHand.MAIN || getRecentHand() == BlocklingHand.BOTH))
          || (hand == BlocklingHand.OFF && (getRecentHand() == BlocklingHand.OFF || getRecentHand() == BlocklingHand.BOTH)))
@@ -151,7 +151,7 @@ public class AttackAction extends KnownTargetAction
      * @return the most recent hand used to attack.
      */
     @Nonnull
-    public BlocklingHand getRecentHand()
+    public BlocklingInteractionHand getRecentHand()
     {
         return recentHand.getValue();
     }

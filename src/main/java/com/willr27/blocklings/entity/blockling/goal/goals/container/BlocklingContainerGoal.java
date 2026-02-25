@@ -1,6 +1,6 @@
 package com.willr27.blocklings.entity.blockling.goal.goals.container;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.Blocklings;
 import com.willr27.blocklings.capabilities.BlockSelectCapability;
 import com.willr27.blocklings.client.gui.control.BaseControl;
@@ -24,23 +24,23 @@ import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.entity.blockling.task.config.ItemConfigurationTypeProperty;
 import com.willr27.blocklings.entity.blockling.task.config.range.IntRangeProperty;
 import com.willr27.blocklings.network.messages.GoalMessage;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.Version;
 import com.willr27.blocklings.util.event.ValueChangedEvent;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -113,12 +113,12 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
 
         properties.add(itemConfigurationTypeProperty = new ItemConfigurationTypeProperty(
                 "35d1e5a5-dfff-4a06-bb71-de1df8823632", this,
-                new BlocklingsTranslationTextComponent("task.property.item_configuration_type.name"),
-                new BlocklingsTranslationTextComponent("task.property.item_configuration_type.desc")));
+                new BlocklingsComponent("task.property.item_configuration_type.name"),
+                new BlocklingsComponent("task.property.item_configuration_type.desc")));
         properties.add(itemTransferAmount = new IntRangeProperty(
                 "c858da92-5009-407c-94ae-56b70d91f01a", this,
-                new BlocklingsTranslationTextComponent("task.property.item_transfer_amount.name"),
-                new BlocklingsTranslationTextComponent("task.property.item_transfer_amount.desc"),
+                new BlocklingsComponent("task.property.item_transfer_amount.name"),
+                new BlocklingsComponent("task.property.item_transfer_amount.desc"),
                 1, 4, 4));
 
         itemConfigurationTypeProperty.setEnabled(blockling.getSkills().getSkill(GeneralSkills.ADVANCED_COURIER).isBought());
@@ -128,11 +128,11 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
     }
 
     @Override
-    public void writeToNBT(@Nonnull CompoundNBT taskTag)
+    public void writeToNBT(@Nonnull CompoundTag taskTag)
     {
         super.writeToNBT(taskTag);
 
-        ListNBT containerInfosTag = new ListNBT();
+        ListTag containerInfosTag = new ListTag();
 
         for (int i = 0; i < containerInfos.size(); i++)
         {
@@ -144,11 +144,11 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT taskTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag taskTag, @Nonnull Version tagVersion)
     {
         super.readFromNBT(taskTag, tagVersion);
 
-        ListNBT containerInfosTag = taskTag.getList("container_infos", 10);
+        ListTag containerInfosTag = taskTag.getList("container_infos", 10);
 
         for (int i = 0; i < containerInfosTag.size(); i++)
         {
@@ -161,7 +161,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
             }
         }
 
-        CompoundNBT itemSetTag = taskTag.getCompound("item_set");
+        CompoundTag itemSetTag = taskTag.getCompound("item_set");
 
         if (taskTag.contains("item_set"))
         {
@@ -174,7 +174,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
@@ -189,7 +189,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 
@@ -462,7 +462,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
      * Adds the given container info to the list and syncs it to the client/server.
      *
      * @param containerInfo the container info.
-     * @param configureInWorld whether to configure the container in the world.
+     * @param configureInLevel whether to configure the container in the world.
      */
     public void addContainerInfo(@Nonnull ContainerInfo containerInfo, boolean configureInWorld)
     {
@@ -473,7 +473,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
      * Adds the given container info to the list.
      *
      * @param containerInfo the container info.
-     * @param configureInWorld whether to configure the container in the world.
+     * @param configureInLevel whether to configure the container in the world.
      * @param sync whether to sync the container info to the client.
      */
     public void addContainerInfo(@Nonnull ContainerInfo containerInfo, boolean configureInWorld, boolean sync)
@@ -482,7 +482,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
 
         if (configureInWorld)
         {
-            PlayerEntity player = (PlayerEntity) blockling.getOwner();
+            Player player = (Player) blockling.getOwner();
             player.getCapability(BlockSelectCapability.CAPABILITY).ifPresent(cap ->
             {
                 cap.isSelecting = true;
@@ -606,12 +606,12 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
     {
         super.addConfigTabControls(tabbedPanel);
 
-        itemsContainer = tabbedPanel.addTab(new BlocklingsTranslationTextComponent("config.items"));
+        itemsAbstractContainerMenu = tabbedPanel.addTab(new BlocklingsComponent("config.items"));
         itemsContainer.setCanScrollVertically(true);
 
         recreateItemsConfigurationControl(itemConfigurationTypeProperty.getType());
 
-        BaseControl containersContainer = tabbedPanel.addTab(new BlocklingsTranslationTextComponent("config.containers"));
+        BaseControl containersAbstractContainerMenu = tabbedPanel.addTab(new BlocklingsComponent("config.containers"));
         containersContainer.setCanScrollVertically(true);
 
         StackPanel stackPanel = new StackPanel();
@@ -629,7 +629,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
             moveContainerInfo(movedIndex, closestIndex + (e.insertBefore ? 0 : 1));
         });
 
-        Control addContainerContainer = new Control();
+        Control addContainerAbstractContainerMenu = new Control();
         addContainerContainer.setParent(stackPanel);
         addContainerContainer.setWidthPercentage(1.0);
         addContainerContainer.setFitHeightToContent(true);
@@ -684,10 +684,10 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
             public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(new BlocklingsTranslationTextComponent("config.container.add").withStyle(isContainerListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                tooltip.add(new BlocklingsTranslationTextComponent("config.container.amount", containerInfos.size(), MAX_CONTAINERS).withStyle(TextFormatting.GRAY).getVisualOrderText());
-                tooltip.add(StringTextComponent.EMPTY.getVisualOrderText());
-                tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.container.add.help", new StringTextComponent(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.ITALIC)).withStyle(TextFormatting.GRAY), 200));
+                tooltip.add(new BlocklingsComponent("config.container.add").withStyle(isContainerListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
+                tooltip.add(new BlocklingsComponent("config.container.amount", containerInfos.size(), MAX_CONTAINERS).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                tooltip.add(Component.EMPTY.getVisualOrderText());
+                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.container.add.help", new Component(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.ITALIC)).withStyle(TextFormatting.GRAY), 200));
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }
 
@@ -729,7 +729,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
      */
     private void recreateItemsConfigurationControl(@Nonnull ItemConfigurationTypeProperty.Type type)
     {
-        if (itemsContainer == null)
+        if (itemsAbstractContainerMenu == null)
         {
             return;
         }
@@ -776,18 +776,18 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
          * @param taskId the id of the goal.
          * @param index the index of the container.
          * @param add whether to add or remove the container info.
-         * @param configureInWorld whether to configure the container in world.
+         * @param configureInLevel whether to configure the container in world.
          */
         public ContainerGoalContainerAddRemoveMessage(@Nonnull BlocklingEntity blockling, @Nonnull UUID taskId, int index, boolean add, boolean configureInWorld)
         {
             super(blockling, taskId);
             this.index = index;
             this.add = add;
-            this.configureInWorld = configureInWorld;
+            this.configureInLevel = configureInWorld;
         }
 
         @Override
-        public void encode(@Nonnull PacketBuffer buf)
+        public void encode(@Nonnull FriendlyByteBuf buf)
         {
             super.encode(buf);
 
@@ -797,17 +797,17 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        public void decode(@Nonnull PacketBuffer buf)
+        public void decode(@Nonnull FriendlyByteBuf buf)
         {
             super.decode(buf);
 
             add = buf.readBoolean();
             index = buf.readInt();
-            configureInWorld = buf.readBoolean();
+            configureInLevel = buf.readBoolean();
         }
 
         @Override
-        protected void handle(@Nonnull PlayerEntity player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
+        protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
         {
             if (add)
             {
@@ -857,7 +857,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        public void encode(@Nonnull PacketBuffer buf)
+        public void encode(@Nonnull FriendlyByteBuf buf)
         {
             super.encode(buf);
 
@@ -866,7 +866,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        public void decode(@Nonnull PacketBuffer buf)
+        public void decode(@Nonnull FriendlyByteBuf buf)
         {
             super.decode(buf);
 
@@ -876,7 +876,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        protected void handle(@Nonnull PlayerEntity player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
+        protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
         {
             goal.setContainerInfo(index, containerInfo, false);
         }
@@ -918,7 +918,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        public void encode(@Nonnull PacketBuffer buf)
+        public void encode(@Nonnull FriendlyByteBuf buf)
         {
             super.encode(buf);
 
@@ -927,7 +927,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        public void decode(@Nonnull PacketBuffer buf)
+        public void decode(@Nonnull FriendlyByteBuf buf)
         {
             super.decode(buf);
 
@@ -936,7 +936,7 @@ public abstract class BlocklingContainerGoal extends BlocklingTargetGoal<Contain
         }
 
         @Override
-        protected void handle(@Nonnull PlayerEntity player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
+        protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling, @Nonnull BlocklingContainerGoal goal)
         {
             goal.moveContainerInfo(fromIndex, toIndex, false);
         }

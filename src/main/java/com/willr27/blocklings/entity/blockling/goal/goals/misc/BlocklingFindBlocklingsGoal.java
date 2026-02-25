@@ -4,10 +4,10 @@ import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.goal.BlocklingTargetGoal;
 import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.entity.blockling.task.config.range.IntRangeProperty;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import com.willr27.blocklings.util.BlocklingsComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nonnull;
@@ -46,8 +46,8 @@ public class BlocklingFindBlocklingsGoal extends BlocklingTargetGoal<BlocklingEn
 
         properties.add(chunkRangeProperty = new IntRangeProperty(
                 "4142fcf1-8af9-4993-bf8d-5369ad58fe8d", this,
-                new BlocklingsTranslationTextComponent("task.property.chunk_range.name"),
-                new BlocklingsTranslationTextComponent("task.property.chunk_range.desc"),
+                new BlocklingsComponent("task.property.chunk_range.name"),
+                new BlocklingsComponent("task.property.chunk_range.desc"),
                 1, 6, 3));
     }
 
@@ -102,7 +102,7 @@ public class BlocklingFindBlocklingsGoal extends BlocklingTargetGoal<BlocklingEn
         int chunkX = blockling.blockPosition().getX() >> 4;
         int chunkZ = blockling.blockPosition().getZ() >> 4;
         int worldHeight = world.getHeight();
-        AxisAlignedBB baseBB = new AxisAlignedBB(0, 0, 0, 16, worldHeight, 16);
+        AABB baseBB = new AABB(0, 0, 0, 16, worldHeight, 16);
 
         final int chunkRange = chunkRangeProperty.getValue();
 

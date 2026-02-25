@@ -1,13 +1,13 @@
 package com.willr27.blocklings.client.gui.control.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.properties.Visibility;
 import com.willr27.blocklings.client.gui.texture.Texture;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.util.DoubleUtil;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

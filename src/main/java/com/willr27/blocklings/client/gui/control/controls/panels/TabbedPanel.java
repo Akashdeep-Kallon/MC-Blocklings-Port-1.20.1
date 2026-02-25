@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.panels;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
@@ -12,7 +12,7 @@ import com.willr27.blocklings.client.gui.texture.Texture;
 import com.willr27.blocklings.client.gui.texture.Textures;
 import com.willr27.blocklings.client.gui.util.ScissorBounds;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +29,7 @@ public class TabbedPanel extends Control
      * The tabs' container.
      */
     @Nonnull
-    private final TabContainer tabContainer;
+    private final TabAbstractContainerMenu tabContainer;
 
     /**
      * The container container.
@@ -52,12 +52,12 @@ public class TabbedPanel extends Control
         setWidthPercentage(1.0);
         setHeightPercentage(1.0);
 
-        containerContainer = new Control();
+        containerAbstractContainerMenu = new Control();
         containerContainer.setParent(this);
         containerContainer.setWidthPercentage(1.0);
         containerContainer.setHeightPercentage(1.0);
 
-        tabContainer = new TabContainer();
+        tabAbstractContainerMenu = new TabContainer();
         tabContainer.setParent(this);
     }
 
@@ -82,7 +82,7 @@ public class TabbedPanel extends Control
     @Override
     public void addChild(@Nonnull BaseControl child)
     {
-        if (child != tabContainer && child != containerContainer)
+        if (child != tabAbstractContainerMenu && child != containerContainer)
         {
             throw new UnsupportedOperationException("Cannot add child to TabbedPanel. Use TabbedPanel#addTab() instead.");
         }

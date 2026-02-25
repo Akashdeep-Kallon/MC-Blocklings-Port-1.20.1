@@ -1,11 +1,11 @@
 package com.willr27.blocklings.capabilities;
 
 import com.willr27.blocklings.Blocklings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -43,7 +43,7 @@ public class BlockSelectCapability
     @SubscribeEvent
     public static void attachCapabilities(@Nonnull AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof PlayerEntity)
+        if (event.getObject() instanceof Player)
         {
             BlockSelectCapability.Provider provider = new BlockSelectCapability.Provider();
             event.addCapability(new ResourceLocation(Blocklings.MODID, "block_select_capability"), provider);
@@ -91,13 +91,13 @@ public class BlockSelectCapability
     {
         @Nullable
         @Override
-        public INBT writeNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side)
+        public Tag writeNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side)
         {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side, INBT nbt)
+        public void readNBT(Capability<BlockSelectCapability> capability, BlockSelectCapability instance, Direction side, Tag nbt)
         {
 
         }

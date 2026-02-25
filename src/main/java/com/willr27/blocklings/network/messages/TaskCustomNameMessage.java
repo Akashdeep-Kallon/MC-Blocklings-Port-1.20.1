@@ -2,9 +2,9 @@ package com.willr27.blocklings.network.messages;
 
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.network.BlocklingMessage;
-import com.willr27.blocklings.util.PacketBufferUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import com.willr27.blocklings.util.FriendlyByteBufUtils;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -42,25 +42,25 @@ public class TaskCustomNameMessage extends BlocklingMessage<TaskCustomNameMessag
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
         buf.writeUUID(taskId);
-        PacketBufferUtils.writeString(buf, customName);
+        FriendlyByteBufUtils.writeString(buf, customName);
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 
         taskId = buf.readUUID();
-        customName = PacketBufferUtils.readString(buf);
+        customName = FriendlyByteBufUtils.readString(buf);
     }
 
     @Override
-    protected void handle(@Nonnull PlayerEntity player, @Nonnull BlocklingEntity blockling)
+    protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling)
     {
         blockling.getTasks().getTask(taskId).setCustomName(customName, false);
     }

@@ -17,12 +17,12 @@ import com.willr27.blocklings.network.NetworkHandler;
 import com.willr27.blocklings.network.messages.SetLevelCommandMessage;
 import com.willr27.blocklings.network.messages.SetTypeCommandMessage;
 import com.willr27.blocklings.network.messages.SetXpCommandMessage;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Util;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -97,7 +97,7 @@ public class BlocklingsCommands
     private static int executeTypeCommand(@Nonnull CommandContext<CommandSource> context, boolean natural)
     {
         CommandSource source = context.getSource();
-        PlayerEntity player = (PlayerEntity) source.getEntity();
+        Player player = (Player) source.getEntity();
 
         if (player == null)
         {
@@ -117,7 +117,7 @@ public class BlocklingsCommands
     private static int executeLevelCommand(@Nonnull CommandContext<CommandSource> context)
     {
         CommandSource source = context.getSource();
-        PlayerEntity player = (PlayerEntity) source.getEntity();
+        Player player = (Player) source.getEntity();
 
         if (player == null)
         {
@@ -138,7 +138,7 @@ public class BlocklingsCommands
     private static int executeXpCommand(@Nonnull CommandContext<CommandSource> context)
     {
         CommandSource source = context.getSource();
-        PlayerEntity player = (PlayerEntity) source.getEntity();
+        Player player = (Player) source.getEntity();
 
         if (player == null)
         {
@@ -159,7 +159,7 @@ public class BlocklingsCommands
     private static int executeDebugSpawnsCommand(@Nonnull CommandContext<CommandSource> context)
     {
         CommandSource source = context.getSource();
-        PlayerEntity player = (PlayerEntity) source.getEntity();
+        Player player = (Player) source.getEntity();
 
         if (player == null)
         {
@@ -173,11 +173,11 @@ public class BlocklingsCommands
 
         if (enabled)
         {
-            player.sendMessage(new BlocklingsTranslationTextComponent("command.debug.spawns.enabled"), Util.NIL_UUID);
+            player.sendMessage(new BlocklingsComponent("command.debug.spawns.enabled"), Util.NIL_UUID);
         }
         else
         {
-            player.sendMessage(new BlocklingsTranslationTextComponent("command.debug.spawns.disabled"), Util.NIL_UUID);
+            player.sendMessage(new BlocklingsComponent("command.debug.spawns.disabled"), Util.NIL_UUID);
         }
 
         return 0;
@@ -222,7 +222,7 @@ public class BlocklingsCommands
         /**
          * The error to throw if the argument is invalid.
          */
-        public static final DynamicCommandExceptionType ERROR_INVALID_VALUE = new DynamicCommandExceptionType((obj) -> new BlocklingsTranslationTextComponent("command.argument.level.invalid", obj));
+        public static final DynamicCommandExceptionType ERROR_INVALID_VALUE = new DynamicCommandExceptionType((obj) -> new BlocklingsComponent("command.argument.level.invalid", obj));
 
         @Override
         public Level parse(StringReader stringReader) throws CommandSyntaxException

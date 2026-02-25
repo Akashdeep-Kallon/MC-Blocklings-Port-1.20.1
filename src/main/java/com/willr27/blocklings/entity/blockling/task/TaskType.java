@@ -3,17 +3,17 @@ package com.willr27.blocklings.entity.blockling.task;
 import com.willr27.blocklings.client.gui.texture.Texture;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.TriFunction;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
 public class TaskType
 {
     public final UUID id;
-    public final TranslationTextComponent name;
-    public final TranslationTextComponent desc;
+    public final Component name;
+    public final Component desc;
     public final boolean isUnlockedByDefault;
     public final boolean isActiveByDefault;
     public final Texture texture;
@@ -22,17 +22,17 @@ public class TaskType
     public TaskType(String id, String key, boolean unlockedByDefault, boolean activeByDefault, Texture texture, TriFunction<UUID, BlocklingEntity, BlocklingTasks, BlocklingGoal> createGoal)
     {
         this.id = UUID.fromString(id);
-        this.name = new GoalTranslationTextComponent(key + ".name");
-        this.desc = new GoalTranslationTextComponent(key + ".desc");
+        this.name = new GoalComponent(key + ".name");
+        this.desc = new GoalComponent(key + ".desc");
         this.isUnlockedByDefault = unlockedByDefault;
         this.isActiveByDefault = activeByDefault;
         this.texture = texture;
         this.createGoal = createGoal;
     }
 
-    public class GoalTranslationTextComponent extends BlocklingsTranslationTextComponent
+    public class GoalComponent extends BlocklingsComponent
     {
-        public GoalTranslationTextComponent(String key)
+        public GoalComponent(String key)
         {
             super("task." + key);
         }

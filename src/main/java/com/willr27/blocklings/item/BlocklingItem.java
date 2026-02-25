@@ -8,22 +8,22 @@ import com.willr27.blocklings.entity.blockling.attribute.BlocklingAttributes;
 import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.entity.blockling.task.Task;
 import com.willr27.blocklings.util.BlocklingsResourceLocation;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.ObjectUtil;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.item.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DeferredWorkQueue;
 
 import javax.annotation.Nonnull;
@@ -55,11 +55,11 @@ public class BlocklingItem extends Item
     public static ItemStack create(@Nonnull BlocklingEntity blockling)
     {
         ItemStack stack = new ItemStack(BlocklingsItems.BLOCKLING.get(), 1);
-        stack.setHoverName(new StringTextComponent(TextFormatting.GOLD + blockling.getCustomName().getString()));
+        stack.setHoverName(new Component(TextFormatting.GOLD + blockling.getCustomName().getString()));
 
-        CompoundNBT stackTag = stack.getOrCreateTag();
+        CompoundTag stackTag = stack.getOrCreateTag();
 
-        CompoundNBT entityTag = new CompoundNBT();
+        CompoundTag entityTag = new CompoundTag();
         blockling.addAdditionalSaveData(entityTag);
         stackTag.put("entity", entityTag);
 
@@ -77,9 +77,9 @@ public class BlocklingItem extends Item
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public InteractionResult useOn(ItemUseContext context)
     {
-        World world = context.getLevel();
+        Level world = context.getLevel();
 
         if (!world.isClientSide)
         {
@@ -95,15 +95,15 @@ public class BlocklingItem extends Item
 
             BlocklingEntity blockling = new BlocklingEntity(BlocklingsEntityTypes.BLOCKLING.get(), world);
 
-            CompoundNBT stackTag = stack.getTag();
-            CompoundNBT entityTag = null;
+            CompoundTag stackTag = stack.getTag();
+            CompoundTag entityTag = null;
 
             if (stackTag != null && stackTag.contains("entity"))
             {
                 entityTag = stackTag.getCompound("entity");
             }
 
-            blockling.finalizeSpawn((IServerWorld) world, world.getCurrentDifficultyAt(blockpos), SpawnReason.SPAWN_EGG, null, entityTag);
+            blockling.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(blockpos), SpawnReason.SPAWN_EGG, null, entityTag);
 
             if (entityTag == null || !entityTag.contains("blockling"))
             {
@@ -123,7 +123,7 @@ public class BlocklingItem extends Item
             {
                 if (stack.getTag().contains("custom_name"))
                 {
-                    blockling.setCustomName(new StringTextComponent(stack.getTag().getString("custom_name")));
+                    blockling.setCustomName(new Component(stack.getTag().getString("custom_name")));
                 }
             }
 
@@ -135,23 +135,23 @@ public class BlocklingItem extends Item
             }
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag)
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag)
     {
-        CompoundNBT stackTag = stack.getTag();
+        CompoundTag stackTag = stack.getTag();
 
         if (stackTag != null && stackTag.contains("entity"))
         {
-            tooltip.add(new StringTextComponent(TextFormatting.GREEN + new BlocklingsTranslationTextComponent("attribute.health.name").getString() + ": " + stackTag.getInt("health") + "/" + stackTag.getInt("max_health")));
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("attribute.combat_level.name").getString() + ": " + stackTag.getInt("combat_level")));
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("attribute.mining_level.name").getString() + ": " + stackTag.getInt("mining_level")));
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("attribute.woodcutting_level.name").getString() + ": " + stackTag.getInt("woodcutting_level")));
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("attribute.farming_level.name").getString() + ": " + stackTag.getInt("farming_level")));
-            tooltip.add(new StringTextComponent(TextFormatting.GRAY + new BlocklingsTranslationTextComponent("attribute.total_level.name").getString() + ": " + stackTag.getInt("total_level")));
-            tooltip.add(new StringTextComponent(""));
+            tooltip.add(new Component(TextFormatting.GREEN + new BlocklingsComponent("attribute.health.name").getString() + ": " + stackTag.getInt("health") + "/" + stackTag.getInt("max_health")));
+            tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("attribute.combat_level.name").getString() + ": " + stackTag.getInt("combat_level")));
+            tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("attribute.mining_level.name").getString() + ": " + stackTag.getInt("mining_level")));
+            tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("attribute.woodcutting_level.name").getString() + ": " + stackTag.getInt("woodcutting_level")));
+            tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("attribute.farming_level.name").getString() + ": " + stackTag.getInt("farming_level")));
+            tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("attribute.total_level.name").getString() + ": " + stackTag.getInt("total_level")));
+            tooltip.add(new Component(""));
         }
 
         super.appendHoverText(stack, world, tooltip, flag);
@@ -163,15 +163,15 @@ public class BlocklingItem extends Item
         {
             ItemModelsProperties.register(BlocklingsItems.BLOCKLING.get(), new BlocklingsResourceLocation("type"), (stack, world, entity) ->
             {
-                CompoundNBT stackTag = stack.getTag();
+                CompoundTag stackTag = stack.getTag();
 
                 if (stackTag != null)
                 {
-                    CompoundNBT entityTag = stackTag.getCompound("entity");
+                    CompoundTag entityTag = stackTag.getCompound("entity");
 
                     if (entityTag != null)
                     {
-                        CompoundNBT blocklingTag = entityTag.getCompound("blockling");
+                        CompoundTag blocklingTag = entityTag.getCompound("blockling");
 
                         if (blocklingTag != null)
                         {

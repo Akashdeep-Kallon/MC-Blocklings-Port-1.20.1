@@ -5,9 +5,9 @@ import com.willr27.blocklings.client.gui.control.controls.TabbedUIControl;
 import com.willr27.blocklings.client.gui.control.event.events.input.MouseClickedEvent;
 import com.willr27.blocklings.client.gui.control.event.events.input.MouseReleasedEvent;
 import com.willr27.blocklings.client.gui.control.event.events.input.MouseScrolledEvent;
-import com.willr27.blocklings.client.gui.screen.BlocklingsContainerScreen;
+import com.willr27.blocklings.client.gui.screen.BlocklingsAbstractContainerScreen;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  * A base screen for all tabbed blockling screens.
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class TabbedContainerScreen<T extends Container> extends BlocklingsContainerScreen<T>
+public abstract class TabbedAbstractContainerScreen<T extends Container> extends BlocklingsAbstractContainerScreen<T>
 {
     /**
      * The tabbed UI control.
@@ -30,7 +30,7 @@ public abstract class TabbedContainerScreen<T extends Container> extends Blockli
      * @param container the container.
      * @param selectedTab the tab to select when the screen is opened.
      */
-    public TabbedContainerScreen(@Nonnull BlocklingEntity blockling, @Nonnull T container, @Nonnull TabbedUIControl.Tab selectedTab)
+    public TabbedAbstractContainerScreen(@Nonnull BlocklingEntity blockling, @Nonnull T container, @Nonnull TabbedUIControl.Tab selectedTab)
     {
         super(blockling, container);
 

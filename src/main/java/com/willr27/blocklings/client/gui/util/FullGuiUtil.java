@@ -1,27 +1,27 @@
 package com.willr27.blocklings.client.gui.util;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.texture.Texture;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.vector.Quaternion;
+import net.minecraft.core.vector.Vector3f;
+import net.minecraft.network.chat.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -113,7 +113,7 @@ public class FullGuiUtil extends GuiUtil
         }
         else
         {
-            return ITextProperties.composite(trim(text, width - mc.font.width("...")), new StringTextComponent("..."));
+            return ITextProperties.composite(trim(text, width - mc.font.width("...")), new Component("..."));
         }
     }
 
@@ -226,7 +226,7 @@ public class FullGuiUtil extends GuiUtil
         entity.yHeadRot = f6;
         RenderSystem.popMatrix();
         matrixStack.popPose();
-        entity.setCustomName(new StringTextComponent(name));
+        entity.setCustomName(new Component(name));
     }
 
     @Override

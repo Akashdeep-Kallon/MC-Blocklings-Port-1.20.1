@@ -1,25 +1,25 @@
 package com.willr27.blocklings.client.gui.screen;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.controls.ScreenControl;
 import com.willr27.blocklings.client.gui.control.event.events.input.*;
 import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractAbstractContainerScreen;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
 /**
- * A base screen to provide an adapter for {@link ContainerScreen}.
+ * A base screen to provide an adapter for {@link AbstractContainerScreen}.
  */
 @OnlyIn(Dist.CLIENT)
-public class BlocklingsContainerScreen<T extends Container> extends ContainerScreen<T>
+public class BlocklingsAbstractContainerScreen<T extends Container> extends AbstractContainerScreen<T>
 {
     /**
      * The blockling associated with the screen.
@@ -31,7 +31,7 @@ public class BlocklingsContainerScreen<T extends Container> extends ContainerScr
      * The player.
      */
     @Nonnull
-    private final PlayerEntity player;
+    private final Player player;
 
     /**
      * The root control that contains all the sub controls on the screen.
@@ -43,9 +43,9 @@ public class BlocklingsContainerScreen<T extends Container> extends ContainerScr
      * @param blockling the blockling associated with the screen.
      * @param container the container.
      */
-    protected BlocklingsContainerScreen(@Nonnull BlocklingEntity blockling, @Nonnull T container)
+    protected BlocklingsAbstractContainerScreen(@Nonnull BlocklingEntity blockling, @Nonnull T container)
     {
-        super(container, Minecraft.getInstance().player.inventory, new StringTextComponent(""));
+        super(container, Minecraft.getInstance().player.inventory, new Component(""));
         this.blockling = blockling;
         this.player = Minecraft.getInstance().player;
     }
