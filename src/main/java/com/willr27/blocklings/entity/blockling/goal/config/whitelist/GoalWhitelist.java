@@ -5,17 +5,17 @@ import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.network.messages.WhitelistAllMessage;
 import com.willr27.blocklings.network.messages.WhitelistIsUnlockedMessage;
 import com.willr27.blocklings.network.messages.WhitelistSingleMessage;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.IReadWriteNBT;
-import com.willr27.blocklings.util.PacketBufferUtils;
+import com.willr27.blocklings.util.FriendlyByteBufUtils;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
     public final Whitelist.Type type;
     public final BlocklingGoal goal;
     public final BlocklingEntity blockling;
-    public final TranslationTextComponent name;
+    public final Component name;
 
     private boolean isUnlocked = true;
 
@@ -39,7 +39,7 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
         this.type = type;
         this.blockling = goal.blockling;
         this.goal = goal;
-        this.name = new BlocklingsTranslationTextComponent("whitelist." + key);
+        this.name = new BlocklingsComponent("whitelist." + key);
     }
 
     public GoalWhitelist(String id, String key, Whitelist.Type type, BlocklingGoal goal, Map whitelist)
@@ -62,7 +62,7 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
     }
 
     @Nonnull
-    public CompoundNBT writeToNBT(CompoundNBT whitelistTag)
+    public CompoundTag writeToNBT(CompoundTag whitelistTag)
     {
         whitelistTag.putBoolean("is_unlocked", isUnlocked);
 
@@ -75,7 +75,7 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
     }
 
     @Nonnull
-    public void readFromNBT(@Nonnull CompoundNBT whitelistTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag whitelistTag, @Nonnull Version tagVersion)
     {
         setIsUnlocked(whitelistTag.getBoolean("is_unlocked"), false);
 
@@ -88,19 +88,19 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
         }
     }
 
-    public void encode(PacketBuffer buf)
+    public void encode(FriendlyByteBuf buf)
     {
         buf.writeBoolean(isUnlocked);
         buf.writeInt(size());
 
         for (Map.Entry<ResourceLocation, Boolean> entry : entrySet())
         {
-            PacketBufferUtils.writeString(buf, entry.getKey().toString());
+            FriendlyByteBufUtils.writeString(buf, entry.getKey().toString());
             buf.writeBoolean(entry.getValue());
         }
     }
 
-    public void decode(PacketBuffer buf)
+    public void decode(FriendlyByteBuf buf)
     {
         setIsUnlocked(buf.readBoolean(), false);
 
@@ -108,7 +108,7 @@ public class GoalWhitelist extends Whitelist<ResourceLocation> implements IReadW
 
         for (int i = 0; i < size; i++)
         {
-            put(new ResourceLocation(PacketBufferUtils.readString(buf)), buf.readBoolean());
+            put(new ResourceLocation(FriendlyByteBufUtils.readString(buf)), buf.readBoolean());
         }
     }
 

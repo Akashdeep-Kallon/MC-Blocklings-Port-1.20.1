@@ -1,9 +1,9 @@
 package com.willr27.blocklings.client.gui.containers.slots;
 
 import com.willr27.blocklings.util.ToolUtil;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 

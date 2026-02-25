@@ -1,15 +1,15 @@
 package com.willr27.blocklings.util;
 
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
 
-public class BlocklingsTranslationTextComponent extends TranslationTextComponent
+public class BlocklingsComponent extends Component
 {
-    public BlocklingsTranslationTextComponent(String key)
+    public BlocklingsComponent(String key)
     {
         super("blocklings." + key);
     }
 
-    public BlocklingsTranslationTextComponent(String key, Object... objects)
+    public BlocklingsComponent(String key, Object... objects)
     {
         super("blocklings." + key, objects);
     }

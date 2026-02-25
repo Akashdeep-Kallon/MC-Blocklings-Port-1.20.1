@@ -11,11 +11,11 @@ import com.willr27.blocklings.entity.blockling.goal.config.whitelist.GoalWhiteli
 import com.willr27.blocklings.network.messages.GoalStateMessage;
 import com.willr27.blocklings.util.BlockUtil;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,7 @@ public abstract class BlocklingGoal extends Goal
      * The world.
      */
     @Nonnull
-    public final World world;
+    public final Level world;
 
     /**
      * The blockling tasks.
@@ -86,7 +86,7 @@ public abstract class BlocklingGoal extends Goal
      *
      * @param taskTag the task's tag to write to.
      */
-    public void writeToNBT(@Nonnull CompoundNBT taskTag)
+    public void writeToNBT(@Nonnull CompoundTag taskTag)
     {
 
     }
@@ -97,7 +97,7 @@ public abstract class BlocklingGoal extends Goal
      * @param taskTag the task's tag to read from.
      * @param tagVersion the tagVersion of the tag.
      */
-    public void readFromNBT(@Nonnull CompoundNBT taskTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag taskTag, @Nonnull Version tagVersion)
     {
 
     }
@@ -107,7 +107,7 @@ public abstract class BlocklingGoal extends Goal
      *
      * @param buf the buffer to write to.
      */
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
 
     }
@@ -117,7 +117,7 @@ public abstract class BlocklingGoal extends Goal
      *
      * @param buf the buffer to read from.
      */
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
 
     }
@@ -173,7 +173,7 @@ public abstract class BlocklingGoal extends Goal
         {
             if (whitelist.isUnlocked())
             {
-                BaseControl whitelistContainer = tabbedPanel.addTab(whitelist.name);
+                BaseControl whitelistAbstractContainerMenu = tabbedPanel.addTab(whitelist.name);
                 whitelistContainer.setPadding(4.0, 10.0, 4.0, 4.0);
                 whitelistContainer.setCanScrollVertically(true);
 

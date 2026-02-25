@@ -61,7 +61,7 @@ public class BlocklingsConfig
      */
     public static void init()
     {
-        ModContainer activeContainer = ModLoadingContext.get().getActiveContainer();
+        ModAbstractContainerMenu activeAbstractContainerMenu = ModLoadingContext.get().getActiveContainer();
 
         activeContainer.addConfig(new ModConfig(ModConfig.Type.COMMON, BlocklingsConfig.COMMON_SPEC, activeContainer));
         activeContainer.addConfig(new ModConfig(ModConfig.Type.CLIENT, BlocklingsConfig.CLIENT_SPEC, activeContainer));

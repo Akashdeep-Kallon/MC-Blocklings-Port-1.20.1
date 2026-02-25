@@ -3,9 +3,9 @@ package com.willr27.blocklings.entity.blockling.goal.config.patrol;
 import com.willr27.blocklings.util.IReadWriteNBT;
 import com.willr27.blocklings.util.ISyncable;
 import com.willr27.blocklings.util.Version;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +46,7 @@ public class PatrolPoint implements IReadWriteNBT, ISyncable
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(@Nonnull CompoundNBT tag)
+    public CompoundTag writeToNBT(@Nonnull CompoundTag tag)
     {
         if (x != null) tag.putInt("x", x);
         if (y != null) tag.putInt("y", y);
@@ -57,7 +57,7 @@ public class PatrolPoint implements IReadWriteNBT, ISyncable
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT tag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag tag, @Nonnull Version tagVersion)
     {
         x = tag.contains("x") ? tag.getInt("x") : null;
         y = tag.contains("y") ? tag.getInt("y") : null;
@@ -66,7 +66,7 @@ public class PatrolPoint implements IReadWriteNBT, ISyncable
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         buf.writeBoolean(x != null);
         if (x != null) buf.writeInt(x);
@@ -78,7 +78,7 @@ public class PatrolPoint implements IReadWriteNBT, ISyncable
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         x = buf.readBoolean() ? buf.readInt() : null;
         y = buf.readBoolean() ? buf.readInt() : null;

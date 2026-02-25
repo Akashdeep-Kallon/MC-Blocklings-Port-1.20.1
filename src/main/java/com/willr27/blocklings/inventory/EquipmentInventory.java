@@ -7,9 +7,9 @@ import com.willr27.blocklings.network.messages.EquipmentInventoryMessage;
 import com.willr27.blocklings.util.ToolContext;
 import com.willr27.blocklings.util.ToolType;
 import com.willr27.blocklings.util.ToolUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.level.block.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jline.utils.Log;
@@ -43,7 +43,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return which hand(s) the blockling currently has a tool in.
      */
     @Nonnull
-    public BlocklingHand findHandToolEquipped(@Nonnull ToolType toolType)
+    public BlocklingInteractionHand findHandToolEquipped(@Nonnull ToolType toolType)
     {
         boolean hasInMain = hasToolEquipped(Hand.MAIN_HAND);
         boolean hasInOff = hasToolEquipped(Hand.OFF_HAND);
@@ -69,7 +69,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the blockling has a tool equipped in the given hand.
      */
-    public boolean hasToolEquipped(@Nonnull Hand hand)
+    public boolean hasToolEquipped(@Nonnull InteractionHand hand)
     {
         return ToolUtil.isTool(getHandStack(hand));
     }
@@ -85,7 +85,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the blockling has a tool equipped of the given type in the given hand.
      */
-    public boolean hasToolEquipped(@Nonnull Hand hand, @Nonnull ToolType toolType)
+    public boolean hasToolEquipped(@Nonnull InteractionHand hand, @Nonnull ToolType toolType)
     {
         return toolType.is(getHandStack(hand));
     }
@@ -94,7 +94,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return the stack in the given hand.
      */
     @Nonnull
-    public ItemStack getHandStack(@Nonnull Hand hand)
+    public ItemStack getHandStack(@Nonnull InteractionHand hand)
     {
         return hand == Hand.MAIN_HAND ? getItem(TOOL_MAIN_HAND) : getItem(TOOL_OFF_HAND);
     }
@@ -102,7 +102,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * Sets the stack in the given hand.
      */
-    public void setHandStack(@Nonnull Hand hand, @Nonnull ItemStack stack)
+    public void setHandStack(@Nonnull InteractionHand hand, @Nonnull ItemStack stack)
     {
         if (hand == Hand.MAIN_HAND)
         {
@@ -117,23 +117,23 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the blockling is attacking with the given hand.
      */
-    public boolean isAttackingWith(@Nonnull BlocklingHand hand)
+    public boolean isAttackingWith(@Nonnull BlocklingInteractionHand hand)
     {
-        BlocklingHand attackingHand = findAttackingHand();
+        BlocklingInteractionHand attackingInteractionHand = findAttackingHand();
 
-        if (hand == BlocklingHand.BOTH && attackingHand == BlocklingHand.BOTH)
+        if (hand == BlocklingHand.BOTH && attackingInteractionHand == BlocklingHand.BOTH)
         {
             return true;
         }
-        else if (hand == BlocklingHand.MAIN && (attackingHand == BlocklingHand.BOTH || attackingHand == BlocklingHand.MAIN))
+        else if (hand == BlocklingHand.MAIN && (attackingInteractionHand == BlocklingHand.BOTH || attackingInteractionHand == BlocklingHand.MAIN))
         {
             return true;
         }
-        else if (hand == BlocklingHand.OFF && (attackingHand == BlocklingHand.BOTH || attackingHand == BlocklingHand.OFF))
+        else if (hand == BlocklingHand.OFF && (attackingInteractionHand == BlocklingHand.BOTH || attackingInteractionHand == BlocklingHand.OFF))
         {
             return true;
         }
-        else if (hand == BlocklingHand.NONE && attackingHand == BlocklingHand.NONE)
+        else if (hand == BlocklingHand.NONE && attackingInteractionHand == BlocklingHand.NONE)
         {
             return true;
         }
@@ -145,7 +145,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return the hand the blockling is attacking with.
      */
     @Nonnull
-    public BlocklingHand findAttackingHand()
+    public BlocklingInteractionHand findAttackingHand()
     {
         if (hasUseableWeapon(Hand.MAIN_HAND) && hasUseableWeapon(Hand.OFF_HAND))
         {
@@ -174,7 +174,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the given hand has a weapon equipped that can currently be used.
      */
-    public boolean hasUseableWeapon(@Nonnull Hand hand)
+    public boolean hasUseableWeapon(@Nonnull InteractionHand hand)
     {
         return hasToolEquipped(hand, ToolType.WEAPON) && ToolUtil.isUseableTool(getHandStack(hand));
     }
@@ -182,7 +182,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the given hand has a tool equipped that can currently be used.
      */
-    public boolean hasUseableTool(@Nonnull Hand hand)
+    public boolean hasUseableTool(@Nonnull InteractionHand hand)
     {
         return ToolUtil.isUseableTool(getHandStack(hand));
     }
@@ -198,7 +198,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if the blockling can harvest the given block with the current tool in the given hand.
      */
-    public boolean canHarvestBlockWithEquippedTool(@Nonnull Hand hand, @Nonnull BlockState blockState)
+    public boolean canHarvestBlockWithEquippedTool(@Nonnull InteractionHand hand, @Nonnull BlockState blockState)
     {
         return ToolUtil.canToolHarvest(getHandStack(hand), blockState);
     }
@@ -206,7 +206,7 @@ public class EquipmentInventory extends AbstractInventory
     /**
      * @return true if any slots were switched.
      */
-    public boolean trySwitchToBestTool(@Nonnull BlocklingHand hand, @Nonnull ToolContext context)
+    public boolean trySwitchToBestTool(@Nonnull BlocklingInteractionHand hand, @Nonnull ToolContext context)
     {
         Pair<SwitchedTools, SwitchedTools> bestToolSlots = findBestToolSlotsToSwitchTo(hand, context);
 
@@ -238,7 +238,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return the best tools for the given hand slots.
      */
     @Nonnull
-    public Pair<ItemStack, ItemStack> findBestToolsToSwitchTo(@Nonnull BlocklingHand hand, @Nonnull ToolContext context)
+    public Pair<ItemStack, ItemStack> findBestToolsToSwitchTo(@Nonnull BlocklingInteractionHand hand, @Nonnull ToolContext context)
     {
         Pair<SwitchedTools, SwitchedTools> bestTools = findBestToolSlotsToSwitchTo(hand, context);
 
@@ -249,7 +249,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return the current hand slots and the best hand slots to switch to.
      */
     @Nonnull
-    public Pair<SwitchedTools, SwitchedTools> findBestToolSlotsToSwitchTo(@Nonnull BlocklingHand hand, @Nonnull ToolContext context)
+    public Pair<SwitchedTools, SwitchedTools> findBestToolSlotsToSwitchTo(@Nonnull BlocklingInteractionHand hand, @Nonnull ToolContext context)
     {
         if (hand == BlocklingHand.MAIN)
         {
@@ -287,7 +287,7 @@ public class EquipmentInventory extends AbstractInventory
      * @return a pair containing the slots to swap with the best items, hand slot first then the other slot to swap with.
      */
     @Nonnull
-    public SwitchedTools findBestToolSlotToSwitchTo(@Nonnull BlocklingHand hand, @Nonnull ToolContext context)
+    public SwitchedTools findBestToolSlotToSwitchTo(@Nonnull BlocklingInteractionHand hand, @Nonnull ToolContext context)
     {
         if (!(hand == BlocklingHand.MAIN || hand == BlocklingHand.OFF))
         {

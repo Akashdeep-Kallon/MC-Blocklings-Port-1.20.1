@@ -2,7 +2,7 @@ package com.willr27.blocklings.entity.blockling.task.config.range;
 
 import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.entity.blockling.task.config.Property;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.ITextComponent;
 
 import javax.annotation.Nonnull;
 

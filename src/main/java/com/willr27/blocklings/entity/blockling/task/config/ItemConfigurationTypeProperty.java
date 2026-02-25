@@ -6,13 +6,13 @@ import com.willr27.blocklings.client.gui.control.controls.config.ItemsConfigurat
 import com.willr27.blocklings.client.gui.control.event.events.SelectionChangedEvent;
 import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.entity.blockling.goal.config.iteminfo.OrderedItemInfoSet;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.Version;
 import com.willr27.blocklings.util.event.EventHandler;
 import com.willr27.blocklings.util.event.IEvent;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.ITextComponent;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class ItemConfigurationTypeProperty extends Property
     }
 
     @Override
-    public CompoundNBT writeToNBT(@Nonnull CompoundNBT propertyTag)
+    public CompoundTag writeToNBT(@Nonnull CompoundTag propertyTag)
     {
         propertyTag.putInt("type", type.ordinal());
 
@@ -53,7 +53,7 @@ public class ItemConfigurationTypeProperty extends Property
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT propertyTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag propertyTag, @Nonnull Version tagVersion)
     {
         setType(Type.values()[propertyTag.getInt("type")], false);
 
@@ -61,7 +61,7 @@ public class ItemConfigurationTypeProperty extends Property
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
@@ -69,7 +69,7 @@ public class ItemConfigurationTypeProperty extends Property
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 
@@ -164,7 +164,7 @@ public class ItemConfigurationTypeProperty extends Property
         @Override
         public String toString()
         {
-            return new BlocklingsTranslationTextComponent("task.property.item_configuration_type." + name().toLowerCase()).getString();
+            return new BlocklingsComponent("task.property.item_configuration_type." + name().toLowerCase()).getString();
         }
     }
 }

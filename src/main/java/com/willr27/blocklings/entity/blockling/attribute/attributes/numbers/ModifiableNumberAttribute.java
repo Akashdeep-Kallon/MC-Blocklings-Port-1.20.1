@@ -5,7 +5,7 @@ import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.attribute.IModifier;
 import com.willr27.blocklings.entity.blockling.attribute.ModifiableAttribute;
 import com.willr27.blocklings.entity.blockling.attribute.Operation;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.world.entity.ai.attributes.ModifiableAttributeInstance;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
      * The vanilla attribute to update when the number attribute changes.
      */
     @Nullable
-    protected net.minecraft.entity.ai.attributes.Attribute vanillaAttribute;
+    protected net.minecraft.world.entity.ai.attributes.Attribute vanillaAttribute;
 
     /**
      * @param id the id of the attribute.
@@ -42,7 +42,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
      * @return the vanilla attribute to update when the number attribute changes.
      */
     @Nullable
-    public net.minecraft.entity.ai.attributes.Attribute getVanillaAttribute()
+    public net.minecraft.world.entity.ai.attributes.Attribute getVanillaAttribute()
     {
         return vanillaAttribute;
     }
@@ -50,7 +50,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
     /**
      * Sets the vanilla attribute to update when the number attribute changes.
      */
-    public void setVanillaAttribute(@Nullable net.minecraft.entity.ai.attributes.Attribute vanillaAttribute)
+    public void setVanillaAttribute(@Nullable net.minecraft.world.entity.ai.attributes.Attribute vanillaAttribute)
     {
         removeFromVanillaAttribute();
 
@@ -112,7 +112,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
             if (isEnabled())
             {
                 // Add the attribute modifier with the current value.
-                vanillaAttributeInstance.addTransientModifier(new net.minecraft.entity.ai.attributes.AttributeModifier(id, key, getValue().doubleValue(), Operation.vanillaOperation(modifier.getOperation())));
+                vanillaAttributeInstance.addTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id, key, getValue().doubleValue(), Operation.vanillaOperation(modifier.getOperation())));
             }
         }
         // If this is just a regular attribute, use it to set the base value for the vanilla attribute.

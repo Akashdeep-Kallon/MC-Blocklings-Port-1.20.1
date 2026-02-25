@@ -1,17 +1,17 @@
 package com.willr27.blocklings.client.renderer.entity.layer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.renderer.entity.BlocklingRenderer;
 import com.willr27.blocklings.client.renderer.entity.model.BlocklingModel;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.util.ToolUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHandSide;
+import net.minecraft.core.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,7 +53,7 @@ public class BlocklingHeldItemLayer extends LayerRenderer<BlocklingEntity, Block
      *
      * @param matrixStack the matrix stack.
      * @param stack the stack to render.
-     * @param isLeftHand whether the item is in the left.
+     * @param isLeftInteractionHand whether the item is in the left.
      * @param blockling the blockling holding the item.
      * @param renderTypeBuffer the render buffer.
      * @param p_225628_3_ ???
@@ -64,12 +64,12 @@ public class BlocklingHeldItemLayer extends LayerRenderer<BlocklingEntity, Block
         matrixStack.translate(0.0, 1.501, 0.0); // There is a random 1.501 translation in render that messes up scales
         matrixStack.scale(blockling.getScale(), blockling.getScale(), blockling.getScale());
         matrixStack.translate(0.0, -1.501, 0.0);
-        getParentModel().translateToHand(isLeftHand ? HandSide.LEFT : HandSide.RIGHT, matrixStack);
+        getParentModel().translateToHand(isLeftInteractionHand ? HandSide.LEFT : HandSide.RIGHT, matrixStack);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0f));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(190.0f));
-        matrixStack.translate((isLeftHand ? 1.0f : -1.0f) / 16.0f, -0.1f, getItemHandDisplacement(stack));
+        matrixStack.translate((isLeftInteractionHand ? 1.0f : -1.0f) / 16.0f, -0.1f, getItemHandDisplacement(stack));
 
-        Minecraft.getInstance().getItemInHandRenderer().renderItem(blockling, stack, isLeftHand ? ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND : ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, isLeftHand, matrixStack, renderTypeBuffer, p_225628_3_);
+        Minecraft.getInstance().getItemInHandRenderer().renderItem(blockling, stack, isLeftInteractionHand ? ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND : ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, isLeftHand, matrixStack, renderTypeBuffer, p_225628_3_);
 
         matrixStack.popPose();
     }

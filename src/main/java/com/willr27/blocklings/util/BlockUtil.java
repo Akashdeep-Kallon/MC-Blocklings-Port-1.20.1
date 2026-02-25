@@ -2,17 +2,17 @@ package com.willr27.blocklings.util;
 
 import com.willr27.blocklings.Blocklings;
 import com.willr27.blocklings.config.BlocklingsConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +31,7 @@ public class BlockUtil
      * The most recent world to load (used to then lazy load the list of valid containers).
      */
     @Nullable
-    public static World latestWorld;
+    public static Level latestWorld;
 
     /**
      * The list of blocks that are considered containers.
@@ -47,7 +47,7 @@ public class BlockUtil
     {
         Blocklings.LOGGER.info("Creating valid containers set.");
 
-        if (latestWorld == null)
+        if (latestLevel == null)
         {
             Blocklings.LOGGER.error("Tried to initialise valid containers set before a world was loaded!");
 
@@ -552,7 +552,7 @@ public class BlockUtil
      * @param pos the position in the world at which to check.
      * @return true if the block can be placed at the given location.
      */
-    public static boolean canPlaceAt(@Nonnull World world, @Nonnull Block block, @Nonnull BlockPos pos)
+    public static boolean canPlaceAt(@Nonnull Level world, @Nonnull Block block, @Nonnull BlockPos pos)
     {
         return block.canSurvive(block.defaultBlockState(), world, pos);
     }
@@ -573,7 +573,7 @@ public class BlockUtil
      * @param blockPos the block position to test.
      * @return true if all adjacent blocks are solid.
      */
-    public static boolean areAllAdjacentBlocksSolid(@Nonnull World world, @Nonnull BlockPos blockPos)
+    public static boolean areAllAdjacentBlocksSolid(@Nonnull Level world, @Nonnull BlockPos blockPos)
     {
         return !Arrays.stream(getAdjacentBlockPositions(blockPos)).anyMatch(blockPos1 -> !world.getBlockState(blockPos1).getMaterial().isSolid());
     }

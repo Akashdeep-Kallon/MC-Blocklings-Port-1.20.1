@@ -13,9 +13,9 @@ import com.willr27.blocklings.util.BlockUtil;
 import com.willr27.blocklings.util.EntityUtil;
 import com.willr27.blocklings.util.ToolContext;
 import com.willr27.blocklings.util.ToolType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -101,8 +101,8 @@ public abstract class BlocklingMeleeAttackGoal extends BlocklingTargetGoal<Livin
 
         if (isInRange(target))
         {
-            BlocklingHand attackingHand = blockling.getEquipment().findAttackingHand();
-            attackingHand = attackingHand == BlocklingHand.BOTH ? blockling.getActions().attack.getRecentHand() == BlocklingHand.OFF ? BlocklingHand.MAIN : BlocklingHand.OFF : attackingHand;
+            BlocklingInteractionHand attackingInteractionHand = blockling.getEquipment().findAttackingHand();
+            attackingInteractionHand = attackingInteractionHand == BlocklingHand.BOTH ? blockling.getActions().attack.getRecentHand() == BlocklingHand.OFF ? BlocklingHand.MAIN : BlocklingHand.OFF : attackingHand;
 
             if (blockling.getActions().attack.tryStart(attackingHand))
             {
@@ -135,9 +135,9 @@ public abstract class BlocklingMeleeAttackGoal extends BlocklingTargetGoal<Livin
      * Performs the necessary actions that occur when a blockling attacks its target.
      *
      * @param target the attack target.
-     * @param attackingHand the attacking hand.
+     * @param attackingInteractionHand the attacking hand.
      */
-    protected void attack(@Nonnull LivingEntity target, @Nonnull BlocklingHand attackingHand)
+    protected void attack(@Nonnull LivingEntity target, @Nonnull BlocklingInteractionHand attackingHand)
     {
         blockling.doHurtTarget(target);
 

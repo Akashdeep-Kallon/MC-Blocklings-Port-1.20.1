@@ -1,13 +1,13 @@
 package com.willr27.blocklings.entity.blockling.goal.config;
 
 import com.willr27.blocklings.util.Version;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import javax.annotation.Nonnull;
@@ -69,9 +69,9 @@ public class ContainerInfo
      * @return the compound tag.
      */
     @Nonnull
-    public CompoundNBT writeToNBT()
+    public CompoundTag writeToNBT()
     {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         compound.putInt("x", getX());
         compound.putInt("y", getY());
         compound.putInt("z", getZ());
@@ -93,7 +93,7 @@ public class ContainerInfo
      * @param tagVersion the version of the tag.
      */
     @Nonnull
-    public void readFromNBT(@Nonnull CompoundNBT containerInfoTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag containerInfoTag, @Nonnull Version tagVersion)
     {
         setBlockPos(new BlockPos(containerInfoTag.getInt("x"), containerInfoTag.getInt("y"), containerInfoTag.getInt("z")));
         setBlock(Registry.BLOCK.get(new ResourceLocation(containerInfoTag.getString("block"))));
@@ -110,7 +110,7 @@ public class ContainerInfo
      *
      * @param buf the buffer to write to.
      */
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         buf.writeBlockPos(blockPos);
         buf.writeRegistryId(block);
@@ -129,7 +129,7 @@ public class ContainerInfo
      * @return the container info.
      */
     @Nonnull
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         setBlockPos(buf.readBlockPos());
         setBlock(buf.readRegistryId());

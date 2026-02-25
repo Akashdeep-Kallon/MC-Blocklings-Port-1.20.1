@@ -1,6 +1,6 @@
 package com.willr27.blocklings.entity.blockling.goal.goals.misc;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.TexturedControl;
@@ -19,17 +19,17 @@ import com.willr27.blocklings.entity.blockling.goal.config.patrol.PatrolPoint;
 import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.entity.blockling.task.config.PatrolTypeProperty;
 import com.willr27.blocklings.util.BlockUtil;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.PathUtil;
 import com.willr27.blocklings.util.Version;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,8 +98,8 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
 
         properties.add(patrolTypeProperty = new PatrolTypeProperty(
                 "76608784-b6eb-4291-9f0a-1efb989eb4fd", this,
-                new BlocklingsTranslationTextComponent("task.property.patrol_type.name"),
-                new BlocklingsTranslationTextComponent("task.property.patrol_type.desc")
+                new BlocklingsComponent("task.property.patrol_type.name"),
+                new BlocklingsComponent("task.property.patrol_type.desc")
         ));
 
         patrolTypeProperty.onTypeChanged.subscribe((e) ->
@@ -109,21 +109,21 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
     }
 
     @Override
-    public void writeToNBT(@Nonnull CompoundNBT taskTag)
+    public void writeToNBT(@Nonnull CompoundTag taskTag)
     {
         super.writeToNBT(taskTag);
 
-        CompoundNBT patrolPointListTag = new CompoundNBT();
+        CompoundTag patrolPointListTag = new CompoundTag();
         patrolPointList.writeToNBT(patrolPointListTag);
         taskTag.put("patrol_point_list", patrolPointListTag);
     }
 
     @Override
-    public void readFromNBT(@Nonnull CompoundNBT taskTag, @Nonnull Version tagVersion)
+    public void readFromNBT(@Nonnull CompoundTag taskTag, @Nonnull Version tagVersion)
     {
         super.readFromNBT(taskTag, tagVersion);
 
-        CompoundNBT patrolPointListTag = taskTag.getCompound("patrol_point_list");
+        CompoundTag patrolPointListTag = taskTag.getCompound("patrol_point_list");
 
         if (patrolTypeProperty != null)
         {
@@ -132,7 +132,7 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
     }
 
     @Override
-    public void encode(@Nonnull PacketBuffer buf)
+    public void encode(@Nonnull FriendlyByteBuf buf)
     {
         super.encode(buf);
 
@@ -140,7 +140,7 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
     }
 
     @Override
-    public void decode(@Nonnull PacketBuffer buf)
+    public void decode(@Nonnull FriendlyByteBuf buf)
     {
         super.decode(buf);
 
@@ -467,7 +467,7 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
     {
         super.addConfigTabControls(tabbedPanel);
 
-        BaseControl pointsContainer = tabbedPanel.addTab(new BlocklingsTranslationTextComponent("config.patrol.points"));
+        BaseControl pointsAbstractContainerMenu = tabbedPanel.addTab(new BlocklingsComponent("config.patrol.points"));
         pointsContainer.setCanScrollVertically(true);
 
         StackPanel stackPanel = new StackPanel();
@@ -491,7 +491,7 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
             stackPanel.addChild(new PatrolPointControl(patrolPoint));
         }
 
-        Control addPointContainer = new Control();
+        Control addPointAbstractContainerMenu = new Control();
         addPointContainer.setParent(stackPanel);
         addPointContainer.setWidthPercentage(1.0);
         addPointContainer.setFitHeightToContent(true);
@@ -516,10 +516,10 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
             public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(new BlocklingsTranslationTextComponent("config.patrol.add").withStyle(isPatrolPointListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                tooltip.add(new BlocklingsTranslationTextComponent("config.patrol.amount", getOrderedPatrolPointList().size(), MAX_PATROL_POINTS).withStyle(TextFormatting.GRAY).getVisualOrderText());
-                tooltip.add(StringTextComponent.EMPTY.getVisualOrderText());
-                tooltip.addAll(GuiUtil.get().split(new BlocklingsTranslationTextComponent("config.patrol.add.help", new StringTextComponent(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.ITALIC)).withStyle(TextFormatting.GRAY), 200));
+                tooltip.add(new BlocklingsComponent("config.patrol.add").withStyle(isPatrolPointListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
+                tooltip.add(new BlocklingsComponent("config.patrol.amount", getOrderedPatrolPointList().size(), MAX_PATROL_POINTS).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                tooltip.add(Component.EMPTY.getVisualOrderText());
+                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.patrol.add.help", new Component(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.ITALIC)).withStyle(TextFormatting.GRAY), 200));
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }
 

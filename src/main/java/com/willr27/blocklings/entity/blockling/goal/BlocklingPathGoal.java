@@ -5,7 +5,7 @@ import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.util.BlockUtil;
 import com.willr27.blocklings.util.PathUtil;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +39,7 @@ public abstract class BlocklingPathGoal extends BlocklingGoal
     private PathTarget pathTarget = null;
 
     /**
-     * The {@link net.minecraft.entity.Entity#moveDist} the blockling had when the path was last recalculated.
+     * The {@link net.minecraft.world.entity.Entity#moveDist} the blockling had when the path was last recalculated.
      */
     private float moveDistanceAtLastPathRecalc = 0.0f;
 
@@ -148,7 +148,7 @@ public abstract class BlocklingPathGoal extends BlocklingGoal
     }
 
     /**
-     * Used to perform the regular {@link #tick()} of a {@link net.minecraft.entity.ai.goal.Goal}. Is always called after
+     * Used to perform the regular {@link #tick()} of a {@link net.minecraft.world.entity.ai.goal.Goal}. Is always called after
      * any potential path recalculations are done, but does not guarantee {@link #pathTarget} is not null.
      */
     protected abstract void tickGoal();

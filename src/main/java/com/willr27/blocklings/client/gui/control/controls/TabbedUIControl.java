@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.control.controls.panels.GridPanel;
 import com.willr27.blocklings.client.gui.control.controls.panels.StackPanel;
@@ -13,9 +13,9 @@ import com.willr27.blocklings.client.gui.texture.Textures;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.client.gui.BlocklingGuiHandler;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -265,7 +265,7 @@ public class TabbedUIControl extends GridPanel
          * The tab name.
          */
         @Nonnull
-        public final TranslationTextComponent name;
+        public final Component name;
 
         /**
          * The gui id for the tab.
@@ -302,7 +302,7 @@ public class TabbedUIControl extends GridPanel
          */
         Tab(@Nonnull String key, int guiId, @Nonnull Texture iconTexture, @Nonnull Texture backgroundTexture, boolean left, int verticalIndex)
         {
-            this.name = new TabTranslationTextComponent(key);
+            this.name = new TabComponent(key);
             this.guiId = guiId;
             this.iconTexture = iconTexture;
             this.backgroundTexture = backgroundTexture;
@@ -313,12 +313,12 @@ public class TabbedUIControl extends GridPanel
         /**
          * A translation text component for a tab.
          */
-        public class TabTranslationTextComponent extends BlocklingsTranslationTextComponent
+        public class TabComponent extends BlocklingsComponent
         {
             /**
              * @param key the key for the translation text component.
              */
-            public TabTranslationTextComponent(@Nonnull String key)
+            public TabComponent(@Nonnull String key)
             {
                 super("tab." + key);
             }

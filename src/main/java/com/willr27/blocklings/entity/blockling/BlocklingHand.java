@@ -18,7 +18,7 @@ public enum BlocklingHand
      * @return the hand equivalent to the given booleans.
      */
     @Nonnull
-    public static BlocklingHand fromBooleans(boolean main, boolean off)
+    public static BlocklingInteractionHand fromBooleans(boolean main, boolean off)
     {
         if (main && off)
         {

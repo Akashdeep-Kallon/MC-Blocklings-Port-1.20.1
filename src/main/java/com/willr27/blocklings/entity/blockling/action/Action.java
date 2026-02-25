@@ -3,9 +3,9 @@ package com.willr27.blocklings.entity.blockling.action;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.network.BlocklingMessage;
 import com.willr27.blocklings.network.NetworkHandler;
-import com.willr27.blocklings.util.PacketBufferUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import com.willr27.blocklings.util.FriendlyByteBufUtils;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -233,25 +233,25 @@ public abstract class Action
         }
 
         @Override
-        public void encode(@Nonnull PacketBuffer buf)
+        public void encode(@Nonnull FriendlyByteBuf buf)
         {
             super.encode(buf);
 
-            PacketBufferUtils.writeString(buf, key);
+            FriendlyByteBufUtils.writeString(buf, key);
             buf.writeFloat(count);
         }
 
         @Override
-        public void decode(@Nonnull PacketBuffer buf)
+        public void decode(@Nonnull FriendlyByteBuf buf)
         {
             super.decode(buf);
 
-            key = PacketBufferUtils.readString(buf);
+            key = FriendlyByteBufUtils.readString(buf);
             count = buf.readFloat();
         }
 
         @Override
-        protected void handle(@Nonnull PlayerEntity player, @Nonnull BlocklingEntity blockling)
+        protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling)
         {
             Action action = blockling.getActions().find(key);
 

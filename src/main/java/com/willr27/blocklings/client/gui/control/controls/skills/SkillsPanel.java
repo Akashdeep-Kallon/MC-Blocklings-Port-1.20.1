@@ -1,6 +1,6 @@
 package com.willr27.blocklings.client.gui.control.controls.skills;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.willr27.blocklings.client.gui.control.BaseControl;
 import com.willr27.blocklings.client.gui.control.Control;
@@ -27,9 +27,9 @@ import com.willr27.blocklings.entity.blockling.skill.Skill;
 import com.willr27.blocklings.entity.blockling.skill.SkillGroup;
 import com.willr27.blocklings.entity.blockling.skill.info.SkillGroupInfo;
 import com.willr27.blocklings.entity.blockling.skill.info.SkillGuiInfo;
-import com.willr27.blocklings.util.BlocklingsTranslationTextComponent;
+import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.DoubleUtil;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -681,7 +681,7 @@ public class SkillsPanel extends CanvasPanel
                     }
                     else
                     {
-                        setText(new BlocklingsTranslationTextComponent("skill.unknown"));
+                        setText(new BlocklingsComponent("skill.unknown"));
                     }
                 }
             };
@@ -762,7 +762,7 @@ public class SkillsPanel extends CanvasPanel
 
             if (state == Skill.State.LOCKED)
             {
-                name = new BlocklingsTranslationTextComponent("skill.unknown").getString();
+                name = new BlocklingsComponent("skill.unknown").getString();
                 description.clear();
                 description.add("...");
             }
@@ -773,7 +773,7 @@ public class SkillsPanel extends CanvasPanel
                 if (levelRequirements.size() > 0)
                 {
                     description.add("");
-                    description.add(new BlocklingsTranslationTextComponent("requirements").getString());
+                    description.add(new BlocklingsComponent("requirements").getString());
 
                     if (levelRequirements.size() > 0)
                     {
@@ -793,7 +793,7 @@ public class SkillsPanel extends CanvasPanel
                 if (!conflicts.isEmpty())
                 {
                     description.add("");
-                    description.add(new BlocklingsTranslationTextComponent("conflicts").getString());
+                    description.add(new BlocklingsComponent("conflicts").getString());
                     for (Skill conflict : conflicts)
                     {
                         description.add(TextFormatting.RED + conflict.info.general.name.getString());
@@ -1152,14 +1152,14 @@ public class SkillsPanel extends CanvasPanel
             container.setDirection(Direction.TOP_TO_BOTTOM);
             container.setSpacing(20.0);
 
-            messageContainer = new StackPanel();
+            messageAbstractContainerMenu = new StackPanel();
             messageContainer.setParent(container);
             messageContainer.setDirection(Direction.TOP_TO_BOTTOM);
             messageContainer.setFitWidthToContent(true);
             messageContainer.setFitHeightToContent(true);
             messageContainer.setSpacing(1.0);
 
-            StackPanel buttonContainer = new StackPanel();
+            StackPanel buttonAbstractContainerMenu = new StackPanel();
             buttonContainer.setParent(container);
             buttonContainer.setDirection(Direction.LEFT_TO_RIGHT);
             buttonContainer.setHorizontalContentAlignment(0.5);
@@ -1185,7 +1185,7 @@ public class SkillsPanel extends CanvasPanel
             yesButton.setWidth(50);
             yesButton.setHeight(20);
             yesButton.setBackgroundColour(randomColour());
-            yesButton.textBlock.setText(new BlocklingsTranslationTextComponent("skill.buy.yes"));
+            yesButton.textBlock.setText(new BlocklingsComponent("skill.buy.yes"));
 
             ButtonControl noButton = new ButtonControl()
             {
@@ -1204,7 +1204,7 @@ public class SkillsPanel extends CanvasPanel
             noButton.setWidth(50);
             noButton.setHeight(20);
             noButton.setBackgroundColour(randomColour());
-            noButton.textBlock.setText(new BlocklingsTranslationTextComponent("skill.buy.no"));
+            noButton.textBlock.setText(new BlocklingsComponent("skill.buy.no"));
 
             setVisibility(Visibility.COLLAPSED);
         }
@@ -1240,7 +1240,7 @@ public class SkillsPanel extends CanvasPanel
             {
                 messageContainer.clearChildren();
 
-                for (String line : GuiUtil.get().split(new BlocklingsTranslationTextComponent("skill.buy_confirmation", TextFormatting.LIGHT_PURPLE + skill.info.general.name.getString() + TextFormatting.WHITE).getString(), (int) getWidth() - 20))
+                for (String line : GuiUtil.get().split(new BlocklingsComponent("skill.buy_confirmation", TextFormatting.LIGHT_PURPLE + skill.info.general.name.getString() + TextFormatting.WHITE).getString(), (int) getWidth() - 20))
                 {
                     TextBlockControl textBlock = new TextBlockControl();
                     textBlock.setParent(messageContainer);

@@ -1,17 +1,17 @@
 package com.willr27.blocklings.client.renderer.entity.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.BlocklingHand;
-import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.Pose;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionHandSide;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -155,7 +155,7 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
     @Override
     public void setupAnim(@Nonnull BlocklingEntity blockling, float limbSwing, float limbSwingAmount, float ageInTicks, float headYaw, float headPitch)
     {
-        EntitySize size = blockling.getDimensions(Pose.STANDING);
+        EntityDimensions size = blockling.getDimensions(Pose.STANDING);
         scaleX = size.width;
         scaleY = size.height;
 
@@ -184,18 +184,18 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
 
         float weaponBonusRotX = 0.7f;
 
-        BlocklingHand hand = blockling.getStats().hand.getValue();
-        BlocklingHand attackingHand = blockling.getEquipment().findAttackingHand();
+        BlocklingInteractionHand hand = blockling.getStats().hand.getValue();
+        BlocklingInteractionHand attackingInteractionHand = blockling.getEquipment().findAttackingHand();
 
         if (blockling.getTarget() != null)
         {
-            if (attackingHand == BlocklingHand.MAIN || attackingHand == BlocklingHand.BOTH)
+            if (attackingInteractionHand == BlocklingHand.MAIN || attackingInteractionHand == BlocklingHand.BOTH)
             {
                 rightArmSwing -= blockling.getEquipment().getHandStack(Hand.MAIN_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
                 rightArmSwingAmount /= 2.0f;
             }
 
-            if (attackingHand == BlocklingHand.OFF || attackingHand == BlocklingHand.BOTH)
+            if (attackingInteractionHand == BlocklingHand.OFF || attackingInteractionHand == BlocklingHand.BOTH)
             {
                 leftArmSwing += blockling.getEquipment().getHandStack(Hand.OFF_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
                 leftArmSwingAmount /= 2.0f;
@@ -205,14 +205,14 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
         if (blockling.getActions().attack.isRunning(BlocklingHand.MAIN))
         {
             float percent = blockling.getActions().attack.percentThroughHandAction(-1) + (blockling.getActions().attack.percentThroughHandAction() - blockling.getActions().attack.percentThroughHandAction(-1)) * partialTicks;
-            float attackSwing = (MathHelper.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
+            float attackSwing = (Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
             rightArmSwing += blockling.getEquipment().getHandStack(Hand.MAIN_HAND).isEmpty() ? -attackSwing : attackSwing;
         }
 
         if (blockling.getActions().attack.isRunning(BlocklingHand.OFF))
         {
             float percent = blockling.getActions().attack.percentThroughHandAction(-1) + (blockling.getActions().attack.percentThroughHandAction() - blockling.getActions().attack.percentThroughHandAction(-1)) * partialTicks;
-            float attackSwing = (MathHelper.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
+            float attackSwing = (Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
             leftArmSwing -= blockling.getEquipment().getHandStack(Hand.OFF_HAND).isEmpty() ? -attackSwing : attackSwing;
         }
 
@@ -220,20 +220,20 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
         {
             if (hand == BlocklingHand.MAIN || hand == BlocklingHand.BOTH)
             {
-                rightArmSwing = (MathHelper.cos(ageInTicks + (float) Math.PI) * 1.0f);
+                rightArmSwing = (Mth.cos(ageInTicks + (float) Math.PI) * 1.0f);
             }
 
             if (hand == BlocklingHand.OFF || hand == BlocklingHand.BOTH)
             {
-                leftArmSwing = (MathHelper.cos(ageInTicks + (float) Math.PI) * 1.0f);
+                leftArmSwing = (Mth.cos(ageInTicks + (float) Math.PI) * 1.0f);
             }
         }
 
-        bodySwing += (MathHelper.cos(limbSwing + (float) Math.PI) * limbSwingAmount * 0.1f);
-        rightArmSwing += (MathHelper.cos(limbSwing + (float) Math.PI) * rightArmSwingAmount * 0.8f);
-        leftArmSwing += (MathHelper.cos(limbSwing + (float) Math.PI) * leftArmSwingAmount) * 0.8f;
-        rightLegSwing += (MathHelper.cos(limbSwing + (float) Math.PI) * rightLegSwingAmount * 0.5f);
-        leftLegSwing += (MathHelper.cos(limbSwing + (float) Math.PI) * leftLegSwingAmount * 0.5f);
+        bodySwing += (Mth.cos(limbSwing + (float) Math.PI) * limbSwingAmount * 0.1f);
+        rightArmSwing += (Mth.cos(limbSwing + (float) Math.PI) * rightArmSwingAmount * 0.8f);
+        leftArmSwing += (Mth.cos(limbSwing + (float) Math.PI) * leftArmSwingAmount) * 0.8f;
+        rightLegSwing += (Mth.cos(limbSwing + (float) Math.PI) * rightLegSwingAmount * 0.5f);
+        leftLegSwing += (Mth.cos(limbSwing + (float) Math.PI) * leftLegSwingAmount * 0.5f);
 
         rightArm.xRot = rightArmSwing + RIGHT_ARM_BASE_ROT_X;
         leftArm.xRot = LEFT_ARM_BASE_ROT_X - leftArmSwing;
