@@ -5,7 +5,7 @@ import com.willr27.blocklings.client.renderer.entity.layer.BlocklingHeldItemLaye
 import com.willr27.blocklings.client.renderer.entity.model.BlocklingModel;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,22 +16,19 @@ import javax.annotation.Nonnull;
  */
 public class BlocklingRenderer extends MobRenderer<BlocklingEntity, BlocklingModel>
 {
-    /**
-     * @param rendererManager the entity render manager.
-     */
-    public BlocklingRenderer(@Nonnull EntityRendererManager rendererManager)
+    public BlocklingRenderer(@Nonnull EntityRendererProvider.Context context)
     {
-        super(rendererManager, new BlocklingModel(), 1.0f);
+        super(context, new BlocklingModel(context.bakeLayer(BlocklingModel.LAYER_LOCATION)), 1.0f);
 
         addLayer(new BlocklingHeldItemLayer(this));
     }
 
     @Override
-    public void render(@Nonnull BlocklingEntity blockling, float p_225623_2_, float p_225623_3_, @Nonnull MatrixStack p_225623_4_, @Nonnull IRenderTypeBuffer p_225623_5_, int p_225623_6_)
+    public void render(@Nonnull BlocklingEntity blockling, float yaw, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int packedLight)
     {
         shadowRadius = blockling.getScale() * 0.5f;
 
-        super.render(blockling, p_225623_2_, p_225623_3_, p_225623_4_, p_225623_5_, p_225623_6_);
+        super.render(blockling, yaw, partialTicks, poseStack, buffer, packedLight);
     }
 
     @Override

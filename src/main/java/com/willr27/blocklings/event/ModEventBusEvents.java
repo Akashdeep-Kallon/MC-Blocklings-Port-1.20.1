@@ -1,6 +1,8 @@
 package com.willr27.blocklings.event;
 
 import com.willr27.blocklings.Blocklings;
+import com.willr27.blocklings.client.renderer.entity.BlocklingRenderer;
+import com.willr27.blocklings.client.renderer.entity.model.BlocklingModel;
 import com.willr27.blocklings.config.BlocklingsConfig;
 import com.willr27.blocklings.entity.BlocklingsEntityTypes;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
@@ -13,6 +15,7 @@ import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,6 +37,28 @@ public class ModEventBusEvents
     public static void addEntityAttributes(@Nonnull EntityAttributeCreationEvent event)
     {
         event.put(BlocklingsEntityTypes.BLOCKLING.get(), BlocklingEntity.createAttributes().build());
+    }
+
+
+    /**
+     * Registers entity renderers.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onRegisterRenderers(@Nonnull EntityRenderersEvent.RegisterRenderers event)
+    {
+        event.registerEntityRenderer(BlocklingsEntityTypes.BLOCKLING.get(), BlocklingRenderer::new);
+    }
+
+
+    /**
+     * Registers model layer definitions.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onRegisterLayerDefinitions(@Nonnull EntityRenderersEvent.RegisterLayerDefinitions event)
+    {
+        event.registerLayerDefinition(BlocklingModel.LAYER_LOCATION, BlocklingModel::createBodyLayer);
     }
 
     /**

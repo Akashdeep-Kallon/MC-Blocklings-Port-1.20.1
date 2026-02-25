@@ -1,5 +1,9 @@
 package com.willr27.blocklings.capabilities;
 
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+
+import javax.annotation.Nonnull;
+
 /**
  * Handles the registration of capabilities.
  */
@@ -8,8 +12,8 @@ public class BlocklingsCapabilities
     /**
      * Registers all capabilities.
      */
-    public static void register()
+    public static void register(@Nonnull RegisterCapabilitiesEvent event)
     {
-        BlockSelectCapability.register();
+        event.register(BlockSelectCapability.class);
     }
 }

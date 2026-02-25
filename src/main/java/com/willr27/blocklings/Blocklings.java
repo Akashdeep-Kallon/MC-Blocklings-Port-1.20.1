@@ -2,7 +2,7 @@ package com.willr27.blocklings;
 
 import com.willr27.blocklings.block.BlocklingsBlocks;
 import com.willr27.blocklings.capabilities.BlocklingsCapabilities;
-import com.willr27.blocklings.client.renderer.entity.BlocklingRenderer;
+import com.willr27.blocklings.client.gui.containers.BlocklingsMenuTypes;
 import com.willr27.blocklings.command.BlocklingsCommands;
 import com.willr27.blocklings.config.BlocklingsConfig;
 import com.willr27.blocklings.entity.BlocklingsEntityTypes;
@@ -16,7 +16,6 @@ import com.willr27.blocklings.util.ObjectUtil;
 import com.willr27.blocklings.util.Version;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -58,9 +57,11 @@ public class Blocklings
         BlocklingsBlocks.register(modEventBus);
         BlocklingsItems.register(modEventBus);
         BlocklingsSounds.register(modEventBus);
+        BlocklingsMenuTypes.register(modEventBus);
 
         modEventBus.addListener(this::setupCommon);
         modEventBus.addListener(this::setupClient);
+        modEventBus.addListener(BlocklingsCapabilities::register);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -75,7 +76,6 @@ public class Blocklings
         ModProxies.init();
         NetworkHandler.init();
         BlocklingsCommands.init();
-        BlocklingsCapabilities.register();
 
         event.enqueueWork(EntityGeneration::init);
     }
@@ -85,8 +85,6 @@ public class Blocklings
      */
     private void setupClient(final FMLClientSetupEvent event)
     {
-        RenderingRegistry.registerEntityRenderingHandler(BlocklingsEntityTypes.BLOCKLING.get(), BlocklingRenderer::new);
-
         BlocklingItem.registerItemModelsProperties();
     }
 }
