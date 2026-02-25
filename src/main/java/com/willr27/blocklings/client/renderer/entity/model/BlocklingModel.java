@@ -1,17 +1,26 @@
 package com.willr27.blocklings.client.renderer.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.willr27.blocklings.Blocklings;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.BlocklingHand;
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasArm;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionHandSide;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,135 +30,49 @@ import javax.annotation.Nonnull;
  * The model for the blockling.
  */
 @OnlyIn(Dist.CLIENT)
-public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHasArm
+public class BlocklingModel extends EntityModel<BlocklingEntity> implements ArmedModel
 {
-    /**
-     * The initial x rotation for the body.
-     */
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Blocklings.MODID, "blockling"), "main");
+
     public static final float BODY_BASE_ROT_X = 0.0872665f;
-
-    /**
-     * The initial x rotation for the right leg.
-     */
     public static final float RIGHT_LEG_BASE_ROT_X = -BODY_BASE_ROT_X;
-
-    /**
-     * The initial x rotation for the left leg.
-     */
     public static final float LEFT_LEG_BASE_ROT_X = -BODY_BASE_ROT_X;
-
-    /**
-     * The initial x rotation for the right arm.
-     */
     public static final float RIGHT_ARM_BASE_ROT_X = 0.785398f - BODY_BASE_ROT_X;
+    public static final float LEFT_ARM_BASE_ROT_X = 0.785398f - BODY_BASE_ROT_X;
 
-    /**
-     * The initial x rotation for the left arm.
-     */
-    public static final float LEFT_ARM_BASE_ROT_X =  0.785398f - BODY_BASE_ROT_X;
+    private final ModelPart body;
+    private final ModelPart rightLeg;
+    private final ModelPart leftLeg;
+    private final ModelPart rightArm;
+    private final ModelPart leftArm;
 
-    /**
-     * The model rendered for the body.
-     */
-    private final ModelRenderer body;
-
-    /**
-     * The model rendered for the right leg.
-     */
-    private final ModelRenderer rightLeg;
-
-    /**
-     * The model rendered for the left leg.
-     */
-    private final ModelRenderer leftLeg;
-
-    /**
-     * The model rendered for the right arm.
-     */
-    private final ModelRenderer rightArm;
-
-    /**
-     * The model rendered for the left arm.
-     */
-    private final ModelRenderer leftArm;
-
-    /**
-     * The model rendered for the right eye.
-     */
-    private final ModelRenderer rightEye;
-
-    /**
-     * The model rendered for the left eye.
-     */
-    private final ModelRenderer leftEye;
-
-    /**
-     * The blockling's x scale.
-     */
     private float scaleX = 1.0f;
-
-    /**
-     * The blockling's y scale.
-     */
     private float scaleY = 1.0f;
 
-    /**
-     * Constructor.
-     */
-    public BlocklingModel()
+    public BlocklingModel(@Nonnull ModelPart root)
     {
-        texWidth = 128;
-        texHeight = 64;
+        body = root.getChild("body");
+        rightLeg = body.getChild("right_leg");
+        leftLeg = body.getChild("left_leg");
+        rightArm = body.getChild("right_arm");
+        leftArm = body.getChild("left_arm");
+    }
 
-        body = new ModelRenderer(this, 16, 0);
-        body.addBox(-6.0f, -3.0f, -6.0f, 12, 12, 12);
-        body.setPos(0.0f, 13.0f, 0.0f);
-        body.setTexSize(128, 64);
-        body.visible = true;
-        setRotation(this.body, BODY_BASE_ROT_X, 0.0f, 0.0f);
-        rightLeg = new ModelRenderer(this, 16, 24);
-        rightLeg.addBox(-1.5f, 1.0f, -3.5f, 5, 6, 6);
-        rightLeg.setPos(-4.0f, 4.0f, 0.5f);
-        rightLeg.setTexSize(128, 64);
-        rightLeg.visible = true;
-        setRotation(this.rightLeg, -RIGHT_LEG_BASE_ROT_X, 0.0f, 0.0f);
-        leftLeg = new ModelRenderer(this, 42, 24);
-        leftLeg.addBox(-3.5f, 1.0f, -3.5f, 5, 6, 6);
-        leftLeg.setPos(4.0f, 4.0f, 0.5f);
-        leftLeg.setTexSize(128, 64);
-        leftLeg.visible = true;
-        setRotation(this.leftLeg, -LEFT_LEG_BASE_ROT_X, 0.0f, 0.0f);
-        rightArm = new ModelRenderer(this, 0, 12);
-        rightArm.addBox(0.0f, 0.0f, -7.0f, 2, 6, 6);
-        rightArm.setPos(-8.0f, 0.0f, 0.0f);
-        rightArm.setTexSize(128, 64);
-        rightArm.visible = true;
-        setRotation(this.rightArm, RIGHT_ARM_BASE_ROT_X, 0.0f, 0.0f);
-        leftArm = new ModelRenderer(this, 64, 12);
-        leftArm.addBox(-2.0f, 0.0f, -7.0f, 2, 6, 6);
-        leftArm.setPos(8.0f, 0.0f, 0.0f);
-        leftArm.setTexSize(128, 64);
-        leftArm.visible = true;
-        setRotation(this.leftArm, LEFT_ARM_BASE_ROT_X, 0.0f, 0.0f);
-        rightEye = new ModelRenderer(this, 22, 8);
-        rightEye.addBox(-1.0f, -0.2f, 1.5f, 2, 3, 1);
-        rightEye.setPos(-2.0f, 3.0f, -8.0f);
-        rightEye.setTexSize(128, 64);
-        rightEye.visible = true;
-        setRotation(this.rightEye, 0.0f, 0.0f, 0.0f);
-        leftEye = new ModelRenderer(this, 52, 8);
-        leftEye.addBox(-1.0f, -0.2f, 1.5f, 2, 3, 1);
-        leftEye.setPos(2.0f, 3.0f, -8.0f);
-        leftEye.setTexSize(128, 64);
-        leftEye.visible = true;
-        setRotation(this.leftEye, 0.0f, 0.0f, 0.0f);
+    public static LayerDefinition createBodyLayer()
+    {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
 
-        body.addChild(this.rightLeg);
-        body.addChild(this.leftLeg);
-        body.addChild(this.rightArm);
-        body.addChild(this.leftArm);
-        body.addChild(this.rightEye);
-        body.addChild(this.leftEye);
+        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 0).addBox(-6.0f, -3.0f, -6.0f, 12.0f, 12.0f, 12.0f), PartPose.offsetAndRotation(0.0f, 13.0f, 0.0f, BODY_BASE_ROT_X, 0.0f, 0.0f));
+
+        body.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(16, 24).addBox(-1.5f, 1.0f, -3.5f, 5.0f, 6.0f, 6.0f), PartPose.offsetAndRotation(-4.0f, 4.0f, 0.5f, -RIGHT_LEG_BASE_ROT_X, 0.0f, 0.0f));
+        body.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(42, 24).addBox(-3.5f, 1.0f, -3.5f, 5.0f, 6.0f, 6.0f), PartPose.offsetAndRotation(4.0f, 4.0f, 0.5f, -LEFT_LEG_BASE_ROT_X, 0.0f, 0.0f));
+        body.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 12).addBox(0.0f, 0.0f, -7.0f, 2.0f, 6.0f, 6.0f), PartPose.offsetAndRotation(-8.0f, 0.0f, 0.0f, RIGHT_ARM_BASE_ROT_X, 0.0f, 0.0f));
+        body.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(64, 12).addBox(-2.0f, 0.0f, -7.0f, 2.0f, 6.0f, 6.0f), PartPose.offsetAndRotation(8.0f, 0.0f, 0.0f, LEFT_ARM_BASE_ROT_X, 0.0f, 0.0f));
+        body.addOrReplaceChild("right_eye", CubeListBuilder.create().texOffs(22, 8).addBox(-1.0f, -0.2f, 1.5f, 2.0f, 3.0f, 1.0f), PartPose.offset(-2.0f, 3.0f, -8.0f));
+        body.addOrReplaceChild("left_eye", CubeListBuilder.create().texOffs(52, 8).addBox(-1.0f, -0.2f, 1.5f, 2.0f, 3.0f, 1.0f), PartPose.offset(2.0f, 3.0f, -8.0f));
+
+        return LayerDefinition.create(mesh, 128, 64);
     }
 
     @Override
@@ -184,20 +107,20 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
 
         float weaponBonusRotX = 0.7f;
 
-        BlocklingInteractionHand hand = blockling.getStats().hand.getValue();
-        BlocklingInteractionHand attackingInteractionHand = blockling.getEquipment().findAttackingHand();
+        BlocklingHand hand = blockling.getStats().hand.getValue();
+        BlocklingHand attackingHand = blockling.getEquipment().findAttackingHand();
 
         if (blockling.getTarget() != null)
         {
-            if (attackingInteractionHand == BlocklingHand.MAIN || attackingInteractionHand == BlocklingHand.BOTH)
+            if (attackingHand == BlocklingHand.MAIN || attackingHand == BlocklingHand.BOTH)
             {
-                rightArmSwing -= blockling.getEquipment().getHandStack(Hand.MAIN_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
+                rightArmSwing -= blockling.getEquipment().getHandStack(InteractionHand.MAIN_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
                 rightArmSwingAmount /= 2.0f;
             }
 
-            if (attackingInteractionHand == BlocklingHand.OFF || attackingInteractionHand == BlocklingHand.BOTH)
+            if (attackingHand == BlocklingHand.OFF || attackingHand == BlocklingHand.BOTH)
             {
-                leftArmSwing += blockling.getEquipment().getHandStack(Hand.OFF_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
+                leftArmSwing += blockling.getEquipment().getHandStack(InteractionHand.OFF_HAND).isEmpty() ? 0.0f : weaponBonusRotX;
                 leftArmSwingAmount /= 2.0f;
             }
         }
@@ -205,35 +128,35 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
         if (blockling.getActions().attack.isRunning(BlocklingHand.MAIN))
         {
             float percent = blockling.getActions().attack.percentThroughHandAction(-1) + (blockling.getActions().attack.percentThroughHandAction() - blockling.getActions().attack.percentThroughHandAction(-1)) * partialTicks;
-            float attackSwing = (Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
-            rightArmSwing += blockling.getEquipment().getHandStack(Hand.MAIN_HAND).isEmpty() ? -attackSwing : attackSwing;
+            float attackSwing = Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f;
+            rightArmSwing += blockling.getEquipment().getHandStack(InteractionHand.MAIN_HAND).isEmpty() ? -attackSwing : attackSwing;
         }
 
         if (blockling.getActions().attack.isRunning(BlocklingHand.OFF))
         {
             float percent = blockling.getActions().attack.percentThroughHandAction(-1) + (blockling.getActions().attack.percentThroughHandAction() - blockling.getActions().attack.percentThroughHandAction(-1)) * partialTicks;
-            float attackSwing = (Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f);
-            leftArmSwing -= blockling.getEquipment().getHandStack(Hand.OFF_HAND).isEmpty() ? -attackSwing : attackSwing;
+            float attackSwing = Mth.cos(percent * (float) Math.PI / 2.0f) * 2.0f;
+            leftArmSwing -= blockling.getEquipment().getHandStack(InteractionHand.OFF_HAND).isEmpty() ? -attackSwing : attackSwing;
         }
 
         if (blockling.getActions().gather.isRunning())
         {
             if (hand == BlocklingHand.MAIN || hand == BlocklingHand.BOTH)
             {
-                rightArmSwing = (Mth.cos(ageInTicks + (float) Math.PI) * 1.0f);
+                rightArmSwing = Mth.cos(ageInTicks + (float) Math.PI) * 1.0f;
             }
 
             if (hand == BlocklingHand.OFF || hand == BlocklingHand.BOTH)
             {
-                leftArmSwing = (Mth.cos(ageInTicks + (float) Math.PI) * 1.0f);
+                leftArmSwing = Mth.cos(ageInTicks + (float) Math.PI) * 1.0f;
             }
         }
 
-        bodySwing += (Mth.cos(limbSwing + (float) Math.PI) * limbSwingAmount * 0.1f);
-        rightArmSwing += (Mth.cos(limbSwing + (float) Math.PI) * rightArmSwingAmount * 0.8f);
-        leftArmSwing += (Mth.cos(limbSwing + (float) Math.PI) * leftArmSwingAmount) * 0.8f;
-        rightLegSwing += (Mth.cos(limbSwing + (float) Math.PI) * rightLegSwingAmount * 0.5f);
-        leftLegSwing += (Mth.cos(limbSwing + (float) Math.PI) * leftLegSwingAmount * 0.5f);
+        bodySwing += Mth.cos(limbSwing + (float) Math.PI) * limbSwingAmount * 0.1f;
+        rightArmSwing += Mth.cos(limbSwing + (float) Math.PI) * rightArmSwingAmount * 0.8f;
+        leftArmSwing += Mth.cos(limbSwing + (float) Math.PI) * leftArmSwingAmount * 0.8f;
+        rightLegSwing += Mth.cos(limbSwing + (float) Math.PI) * rightLegSwingAmount * 0.5f;
+        leftLegSwing += Mth.cos(limbSwing + (float) Math.PI) * leftLegSwingAmount * 0.5f;
 
         rightArm.xRot = rightArmSwing + RIGHT_ARM_BASE_ROT_X;
         leftArm.xRot = LEFT_ARM_BASE_ROT_X - leftArmSwing;
@@ -246,45 +169,30 @@ public class BlocklingModel extends EntityModel<BlocklingEntity> implements IHas
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrixStack, @Nonnull IVertexBuilder buffer, int packedLight, int packedOverlay, float r, float g, float b, float a)
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer buffer, int packedLight, int packedOverlay, float r, float g, float b, float a)
     {
-        matrixStack.pushPose();
-        matrixStack.translate(0.0, 1.501, 0.0); // There is a random 1.501 translation in render that messes up scales
-        matrixStack.scale(scaleX, scaleY, scaleX);
-        matrixStack.translate(0.0, -1.501, 0.0);
+        poseStack.pushPose();
+        poseStack.translate(0.0, 1.501, 0.0);
+        poseStack.scale(scaleX, scaleY, scaleX);
+        poseStack.translate(0.0, -1.501, 0.0);
 
-        body.render(matrixStack, buffer, packedLight, packedOverlay, r, g, b, a);
+        body.render(poseStack, buffer, packedLight, packedOverlay, r, g, b, a);
 
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
     @Override
-    public void translateToHand(@Nonnull HandSide hand, @Nonnull MatrixStack matrixStack)
+    public void translateToHand(@Nonnull HumanoidArm hand, @Nonnull PoseStack poseStack)
     {
-        body.translateAndRotate(matrixStack);
+        body.translateAndRotate(poseStack);
 
-        if (hand == HandSide.LEFT)
+        if (hand == HumanoidArm.LEFT)
         {
-            leftArm.translateAndRotate(matrixStack);
+            leftArm.translateAndRotate(poseStack);
         }
         else
         {
-            rightArm.translateAndRotate(matrixStack);
+            rightArm.translateAndRotate(poseStack);
         }
-    }
-
-    /**
-     * Helper to set all rotations in one go.
-     *
-     * @param model the model to set the rotations for.
-     * @param x the x rotation.
-     * @param y the y rotation.
-     * @param z the z rotation.
-     */
-    private static void setRotation(@Nonnull ModelRenderer model, float x, float y, float z)
-    {
-        model.xRot = x;
-        model.yRot = y;
-        model.zRot = z;
     }
 }
