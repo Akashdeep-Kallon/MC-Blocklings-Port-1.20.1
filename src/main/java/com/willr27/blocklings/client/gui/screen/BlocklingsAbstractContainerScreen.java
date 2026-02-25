@@ -6,7 +6,7 @@ import com.willr27.blocklings.client.gui.control.event.events.input.*;
 import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractAbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
  * A base screen to provide an adapter for {@link AbstractContainerScreen}.
  */
 @OnlyIn(Dist.CLIENT)
-public class BlocklingsAbstractContainerScreen<T extends Container> extends AbstractContainerScreen<T>
+public class BlocklingsAbstractContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T>
 {
     /**
      * The blockling associated with the screen.
@@ -45,7 +45,7 @@ public class BlocklingsAbstractContainerScreen<T extends Container> extends Abst
      */
     protected BlocklingsAbstractContainerScreen(@Nonnull BlocklingEntity blockling, @Nonnull T container)
     {
-        super(container, Minecraft.getInstance().player.inventory, new Component(""));
+        super(container, Minecraft.getInstance().player.getInventory(), Component.literal(""));
         this.blockling = blockling;
         this.player = Minecraft.getInstance().player;
     }
@@ -78,23 +78,23 @@ public class BlocklingsAbstractContainerScreen<T extends Container> extends Abst
     }
 
     @Override
-    protected void renderBg(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_)
+    protected void renderBg(@Nonnull PoseStack poseStack, float partialTicks, int mouseX, int mouseY)
     {
 
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
-        screenControl.render(matrixStack, mouseX, mouseY, partialTicks);
+        screenControl.render(poseStack, mouseX, mouseY, partialTicks);
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
 
-        renderTooltip(matrixStack, mouseX, mouseY);
+        renderTooltip(poseStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(@Nonnull MatrixStack matrixStack, int screenMouseX, int screenMouseY)
+    protected void renderLabels(@Nonnull PoseStack poseStack, int screenMouseX, int screenMouseY)
     {
 
     }
