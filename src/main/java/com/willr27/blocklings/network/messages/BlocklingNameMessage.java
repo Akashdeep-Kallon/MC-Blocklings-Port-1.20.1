@@ -58,6 +58,6 @@ public class BlocklingNameMessage extends BlocklingMessage<BlocklingNameMessage>
     @Override
     protected void handle(@Nonnull Player player, @Nonnull BlocklingEntity blockling)
     {
-        blockling.setCustomName(name.equals("") ? null : new Component(name), false);
+        blockling.setCustomName(name.equals("") ? null : Component.literal(name), false);
     }
 }

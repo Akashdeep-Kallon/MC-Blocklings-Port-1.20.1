@@ -26,8 +26,8 @@ import com.willr27.blocklings.util.BlocklingsComponent;
 import com.willr27.blocklings.util.event.ValueChangedEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -218,7 +218,7 @@ public abstract class ItemsConfigurationControl extends Control
             addBackground = new TexturedControl(Textures.Tasks.TASK_ICON_BACKGROUND_RAISED, Textures.Tasks.TASK_ICON_BACKGROUND_PRESSED)
             {
                 @Override
-                protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                 {
                     if (itemsPanel.getChildren().size() - 1 > getMaxItems())
                     {
@@ -231,11 +231,11 @@ public abstract class ItemsConfigurationControl extends Control
                 }
 
                 @Override
-                public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                 {
-                    List<IReorderingProcessor> tooltip = new ArrayList<>();
-                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                    List<FormattedCharSequence> tooltip = new ArrayList<>();
+                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? ChatFormatting.GRAY : ChatFormatting.WHITE).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                     renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                 }
 
@@ -259,7 +259,7 @@ public abstract class ItemsConfigurationControl extends Control
             TexturedControl addIcon = new TexturedControl(Textures.Common.PLUS_ICON)
             {
                 @Override
-                protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                 {
                     if (itemsPanel.getChildren().size() - 1 > getMaxItems())
                     {
@@ -433,12 +433,12 @@ public abstract class ItemsConfigurationControl extends Control
                 TexturedControl itemBackground = new TexturedControl(Textures.Tasks.TASK_ICON_BACKGROUND_RAISED, Textures.Tasks.TASK_ICON_BACKGROUND_PRESSED)
                 {
                     @Override
-                    protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                    protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                     {
                         super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
                     }
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
                     }
@@ -564,7 +564,7 @@ public abstract class ItemsConfigurationControl extends Control
             TexturedControl addItemButton = new TexturedControl(Textures.Common.PLUS_ICON)
             {
                 @Override
-                protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                 {
                     if (itemsPanel.getChildren().size() - 1 > getMaxItems())
                     {
@@ -577,11 +577,11 @@ public abstract class ItemsConfigurationControl extends Control
                 }
 
                 @Override
-                public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                 {
-                    List<IReorderingProcessor> tooltip = new ArrayList<>();
-                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                    List<FormattedCharSequence> tooltip = new ArrayList<>();
+                    tooltip.add(new BlocklingsComponent("config.item.add").withStyle(itemsPanel.getChildren().size() - 1 > getMaxItems() ? ChatFormatting.GRAY : ChatFormatting.WHITE).getVisualOrderText());
+                    tooltip.add(new BlocklingsComponent("config.item.amount", itemsPanel.getChildren().size() - 2, getMaxItems()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                     renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                 }
 
@@ -764,7 +764,7 @@ public abstract class ItemsConfigurationControl extends Control
                 TexturedControl iconBackground = new TexturedControl(Textures.Tasks.TASK_ICON_BACKGROUND_RAISED, Textures.Tasks.TASK_ICON_BACKGROUND_PRESSED)
                 {
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.item.remove", new ItemStack(itemInfo.getItem()).getHoverName().getString()));
                     }
@@ -819,7 +819,7 @@ public abstract class ItemsConfigurationControl extends Control
                 GridPanel dropdownGrid = new GridPanel()
                 {
                     @Override
-                    protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                    protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                     {
                         Texture texture = Textures.Common.BAR_FLAT.dy(1).dHeight(-2).width((int) getWidth());
                         Texture endTexture = Textures.Common.BAR_FLAT.dy(1).dHeight(-2).width(2).x(Textures.Common.BAR_FLAT.width - 2);
@@ -842,7 +842,7 @@ public abstract class ItemsConfigurationControl extends Control
                 TexturedControl nameBackground = new TexturedControl(Textures.Common.BAR_RAISED)
                 {
                     @Override
-                    protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+                    protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
                     {
                         if (isHovered() && getDraggedControl() == null)
                         {
@@ -856,7 +856,7 @@ public abstract class ItemsConfigurationControl extends Control
                     }
 
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
                         renderTooltip(matrixStack, mouseX, mouseY, name.getText());
                     }
@@ -951,11 +951,11 @@ public abstract class ItemsConfigurationControl extends Control
                 NullableIntFieldControl startInventoryField = new NullableIntFieldControl()
                 {
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        List<IReorderingProcessor> tooltip = new ArrayList<>();
+                        List<FormattedCharSequence> tooltip = new ArrayList<>();
                         tooltip.add(new BlocklingsComponent("config.item.inventory_start_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_start_amount.desc").withStyle(ChatFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -987,11 +987,11 @@ public abstract class ItemsConfigurationControl extends Control
                 NullableIntFieldControl startContainerField = new NullableIntFieldControl()
                 {
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        List<IReorderingProcessor> tooltip = new ArrayList<>();
+                        List<FormattedCharSequence> tooltip = new ArrayList<>();
                         tooltip.add(new BlocklingsComponent("config.item.container_start_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_start_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_start_amount.desc").withStyle(ChatFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -1042,11 +1042,11 @@ public abstract class ItemsConfigurationControl extends Control
                 NullableIntFieldControl stopInventoryField = new NullableIntFieldControl()
                 {
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        List<IReorderingProcessor> tooltip = new ArrayList<>();
+                        List<FormattedCharSequence> tooltip = new ArrayList<>();
                         tooltip.add(new BlocklingsComponent("config.item.inventory_stop_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.inventory_stop_amount.desc").withStyle(ChatFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }
@@ -1078,11 +1078,11 @@ public abstract class ItemsConfigurationControl extends Control
                 NullableIntFieldControl stopContainerField = new NullableIntFieldControl()
                 {
                     @Override
-                    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+                    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
                     {
-                        List<IReorderingProcessor> tooltip = new ArrayList<>();
+                        List<FormattedCharSequence> tooltip = new ArrayList<>();
                         tooltip.add(new BlocklingsComponent("config.item.container_stop_amount.name").getVisualOrderText());
-                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_stop_amount.desc").withStyle(TextFormatting.GRAY), 200));
+                        tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.item.container_stop_amount.desc").withStyle(ChatFormatting.GRAY), 200));
 
                         renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                     }

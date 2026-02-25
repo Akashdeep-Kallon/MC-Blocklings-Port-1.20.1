@@ -59,7 +59,7 @@ public class EntityControl extends Control
     private boolean scaleToBoundingBox = true;
 
     @Override
-    public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+    public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
     {
         super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
 
@@ -70,7 +70,7 @@ public class EntityControl extends Control
         float lookX = getLookX() != null ? getLookX() : (float) (mouseX / getGuiScale());
         float lookY = getLookY() != null ? getLookY() : (float) (mouseY / getGuiScale());
 
-        GuiUtil.get().renderEntityOnScreen(new MatrixStack(), entity, (int) x, (int) y, lookX, lookY, (float) scale, shouldScaleToBoundingBox());
+        GuiUtil.get().renderEntityOnScreen(new PoseStack(), entity, (int) x, (int) y, lookX, lookY, (float) scale, shouldScaleToBoundingBox());
     }
 
     /**

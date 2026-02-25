@@ -27,10 +27,10 @@ import com.willr27.blocklings.entity.blockling.attribute.Operation;
 import com.willr27.blocklings.item.BlocklingsItems;
 import com.willr27.blocklings.util.BlocklingsComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -75,12 +75,12 @@ public class StatsScreen extends TabbedScreen
         {
             if (!textFieldControl.getText().trim().isEmpty())
             {
-                blockling.setCustomName(new Component(textFieldControl.getText()), true);
+                blockling.setCustomName(Component.literal(textFieldControl.getText()), true);
             }
             else
             {
-                ITextComponent name = BlocklingsItems.BLOCKLING.get().getName(BlocklingsItems.BLOCKLING.get().getDefaultInstance());
-                blockling.setCustomName(new Component(name.getString()), true);
+                Component name = BlocklingsItems.BLOCKLING.get().getName(BlocklingsItems.BLOCKLING.get().getDefaultInstance());
+                blockling.setCustomName(Component.literal(name.getString()), true);
                 textFieldControl.setText(name.getString());
             }
         });
@@ -129,17 +129,17 @@ public class StatsScreen extends TabbedScreen
         combatStats.addControl(new StatControl(
                 Textures.Stats.ATTACK_DAMAGE_MAIN,
                 () -> stats.mainHandAttackDamage.displayStringValueFunction.apply(stats.mainHandAttackDamage.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.mainHandAttackDamage, TextFormatting.DARK_RED), false),
+                () -> createModifiableFloatAttributeTooltip(stats.mainHandAttackDamage, ChatFormatting.DARK_RED), false),
                 () -> blockling.getEquipment().isAttackingWith(BlocklingHand.MAIN));
         combatStats.addControl(new StatControl(
                 Textures.Stats.ATTACK_DAMAGE_OFF,
                 () -> stats.offHandAttackDamage.displayStringValueFunction.apply(stats.offHandAttackDamage.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.offHandAttackDamage, TextFormatting.DARK_RED), false),
+                () -> createModifiableFloatAttributeTooltip(stats.offHandAttackDamage, ChatFormatting.DARK_RED), false),
                 () -> blockling.getEquipment().isAttackingWith(BlocklingHand.OFF));
         combatStats.addControl(new StatControl(
                 Textures.Stats.ATTACK_SPEED,
                 () -> stats.attackSpeed.displayStringValueFunction.apply(stats.attackSpeed.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.attackSpeed, TextFormatting.DARK_PURPLE), false));
+                () -> createModifiableFloatAttributeTooltip(stats.attackSpeed, ChatFormatting.DARK_PURPLE), false));
 
         EnumeratingControl defenceStats = new EnumeratingStatControl(new BlocklingsComponent("stats.defence.name"));
         defenceStats.setParent(leftStatsControl);
@@ -148,15 +148,15 @@ public class StatsScreen extends TabbedScreen
         defenceStats.addControl(new StatControl(
                 Textures.Stats.ARMOUR,
                 () -> stats.armour.displayStringValueFunction.apply(stats.armour.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.armour, TextFormatting.DARK_AQUA), false));
+                () -> createModifiableFloatAttributeTooltip(stats.armour, ChatFormatting.DARK_AQUA), false));
         defenceStats.addControl(new StatControl(
                 Textures.Stats.ARMOUR_TOUGHNESS,
                 () -> stats.armourToughness.displayStringValueFunction.apply(stats.armourToughness.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.armourToughness, TextFormatting.AQUA), false));
+                () -> createModifiableFloatAttributeTooltip(stats.armourToughness, ChatFormatting.AQUA), false));
         defenceStats.addControl(new StatControl(
                 Textures.Stats.KNOCKBACK_RESISTANCE,
                 () -> stats.knockbackResistance.displayStringValueFunction.apply(stats.knockbackResistance.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.knockbackResistance, TextFormatting.YELLOW), false));
+                () -> createModifiableFloatAttributeTooltip(stats.knockbackResistance, ChatFormatting.YELLOW), false));
 
         EnumeratingControl gatherStats = new EnumeratingStatControl(new BlocklingsComponent("stats.gathering.name"));
         gatherStats.setParent(rightStatsControl);
@@ -165,15 +165,15 @@ public class StatsScreen extends TabbedScreen
         gatherStats.addControl(new StatControl(
                 Textures.Stats.MINING_SPEED,
                 () -> stats.miningSpeed.displayStringValueFunction.apply(stats.miningSpeed.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.miningSpeed, TextFormatting.BLUE), true));
+                () -> createModifiableFloatAttributeTooltip(stats.miningSpeed, ChatFormatting.BLUE), true));
         gatherStats.addControl(new StatControl(
                 Textures.Stats.WOODCUTTING_SPEED,
                 () -> stats.woodcuttingSpeed.displayStringValueFunction.apply(stats.woodcuttingSpeed.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.woodcuttingSpeed, TextFormatting.DARK_GREEN), true));
+                () -> createModifiableFloatAttributeTooltip(stats.woodcuttingSpeed, ChatFormatting.DARK_GREEN), true));
         gatherStats.addControl(new StatControl(
                 Textures.Stats.FARMING_SPEED,
                 () -> stats.farmingSpeed.displayStringValueFunction.apply(stats.farmingSpeed.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.farmingSpeed, TextFormatting.YELLOW), true));
+                () -> createModifiableFloatAttributeTooltip(stats.farmingSpeed, ChatFormatting.YELLOW), true));
 
         EnumeratingControl movementStats = new EnumeratingStatControl(new BlocklingsComponent("stats.movement.name"));
         movementStats.setParent(rightStatsControl);
@@ -182,48 +182,48 @@ public class StatsScreen extends TabbedScreen
         movementStats.addControl(new StatControl(
                 Textures.Stats.MOVE_SPEED,
                 () -> stats.moveSpeed.displayStringValueFunction.apply(stats.moveSpeed.getValue()),
-                () -> createModifiableFloatAttributeTooltip(stats.moveSpeed, TextFormatting.BLUE), true));
+                () -> createModifiableFloatAttributeTooltip(stats.moveSpeed, ChatFormatting.BLUE), true));
 
         EntityControl entityControl = new EntityControl()
         {
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
-                List<IReorderingProcessor> tooltip = new ArrayList<>();
+                List<FormattedCharSequence> tooltip = new ArrayList<>();
 
-                tooltip.add(new Component(TextFormatting.GOLD + blockling.getCustomName().getString()).getVisualOrderText());
-                tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("type.natural.name").getString() + TextFormatting.WHITE + blockling.getNaturalBlocklingType().name.getString()).getVisualOrderText());
+                tooltip.add(Component.literal(ChatFormatting.GOLD + blockling.getCustomName().getString()).getVisualOrderText());
+                tooltip.add(Component.literal(ChatFormatting.GRAY + new BlocklingsComponent("type.natural.name").getString() + ChatFormatting.WHITE + blockling.getNaturalBlocklingType().name.getString()).getVisualOrderText());
 
                 List<String> splitText;
 
                 if (GuiUtil.get().isCrouchKeyDown())
                 {
                     splitText = GuiUtil.get().split(new BlocklingsComponent("type.natural.desc").getString(), 200);
-                    splitText.stream().map(s -> new Component(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
+                    splitText.stream().map(s -> Component.literal(ChatFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
                 }
 
                 splitText = GuiUtil.get().split(new BlocklingsComponent("type." + blockling.getNaturalBlocklingType().key + ".passive").getString(), 200);
-                splitText.stream().map(s -> new Component(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
+                splitText.stream().map(s -> Component.literal(ChatFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
 
-                tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("type.name").getString() + TextFormatting.WHITE + blockling.getBlocklingType().name.getString()).getVisualOrderText());
+                tooltip.add(Component.literal(ChatFormatting.GRAY + new BlocklingsComponent("type.name").getString() + ChatFormatting.WHITE + blockling.getBlocklingType().name.getString()).getVisualOrderText());
 
                 if (GuiUtil.get().isCrouchKeyDown())
                 {
                     splitText = GuiUtil.get().split(new BlocklingsComponent("type.desc").getString(), 200);
-                    splitText.stream().map(s -> new Component(TextFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
+                    splitText.stream().map(s -> Component.literal(ChatFormatting.DARK_GRAY + s).getVisualOrderText()).forEach(tooltip::add);
                 }
 
                 splitText = GuiUtil.get().split(new BlocklingsComponent("type." + blockling.getBlocklingType().key + ".passive").getString(), 200);
-                splitText.stream().map(s -> new Component(TextFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
+                splitText.stream().map(s -> Component.literal(ChatFormatting.AQUA + s).getVisualOrderText()).forEach(tooltip::add);
 
-                String foodsString = TextFormatting.GRAY + new BlocklingsComponent("type.foods").getString() + TextFormatting.WHITE + new BlocklingsComponent("type.foods.flowers").getString() + ", ";
+                String foodsString = ChatFormatting.GRAY + new BlocklingsComponent("type.foods").getString() + ChatFormatting.WHITE + new BlocklingsComponent("type.foods.flowers").getString() + ", ";
                 foodsString += blockling.getBlocklingType().foods.stream().map(food -> food.getDescription().getString()).collect(joining(", "));
                 splitText = GuiUtil.get().split(foodsString, 200);
-                splitText.stream().map(s -> new Component(s).getVisualOrderText()).forEach(tooltip::add);
+                splitText.stream().map(s -> Component.literal(s).getVisualOrderText()).forEach(tooltip::add);
 
                 if (!GuiUtil.get().isCrouchKeyDown())
                 {
-                    tooltip.add(new Component(TextFormatting.DARK_GRAY + "" + TextFormatting.ITALIC + new BlocklingsComponent("gui.more_info", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).getString()).getVisualOrderText());
+                    tooltip.add(Component.literal(ChatFormatting.DARK_GRAY + "" + ChatFormatting.ITALIC + new BlocklingsComponent("gui.more_info", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).getString()).getVisualOrderText());
                 }
 
                 renderTooltip(matrixStack, mouseX, mouseY, getPixelScaleX(), getPixelScaleY(), tooltip);
@@ -270,11 +270,11 @@ public class StatsScreen extends TabbedScreen
      * @return the tooltip.
      */
     @Nonnull
-    public static List<ITextComponent> createModifiableFloatAttributeTooltip(@Nonnull IModifiable<Float> attribute, @Nonnull TextFormatting colour)
+    public static List<Component> createModifiableFloatAttributeTooltip(@Nonnull IModifiable<Float> attribute, @Nonnull ChatFormatting colour)
     {
-        List<ITextComponent> tooltip = new ArrayList<>();
+        List<Component> tooltip = new ArrayList<>();
 
-        tooltip.add(new Component(colour + attribute.getDisplayStringValueFunction().apply(attribute.getValue()) + " " + TextFormatting.GRAY + attribute.createTranslation("name").getString()));
+        tooltip.add(Component.literal(colour + attribute.getDisplayStringValueFunction().apply(attribute.getValue()) + " " + ChatFormatting.GRAY + attribute.createTranslation("name").getString()));
 
         appendModifiableFloatAttributeToTooltip(tooltip, attribute, 1);
 
@@ -288,7 +288,7 @@ public class StatsScreen extends TabbedScreen
      * @param attribute the modifiable attribute.
      * @param depth the current depth in terms of modifiers on modifiers.
      */
-    public static void appendModifiableFloatAttributeToTooltip(@Nonnull List<ITextComponent> tooltip, @Nonnull IModifiable<Float> attribute, int depth)
+    public static void appendModifiableFloatAttributeToTooltip(@Nonnull List<Component> tooltip, @Nonnull IModifiable<Float> attribute, int depth)
     {
         for (IModifier<Float> modifier : attribute.getModifiers())
         {
@@ -298,7 +298,7 @@ public class StatsScreen extends TabbedScreen
             }
 
             String sign = modifier.getValue() < 0.0f && modifier.getOperation() == Operation.ADD ? "" : modifier.getValue() < 1.0f && modifier.getOperation() != Operation.ADD ? "" : "+";
-            tooltip.add(new Component(TextFormatting.GRAY + generate(() -> " ").limit(depth).collect(joining()) + sign + modifier.getDisplayStringValueFunction().apply(modifier.getValue()) + " " + TextFormatting.DARK_GRAY + modifier.getDisplayStringNameSupplier().get()));
+            tooltip.add(Component.literal(ChatFormatting.GRAY + generate(() -> " ").limit(depth).collect(joining()) + sign + modifier.getDisplayStringValueFunction().apply(modifier.getValue()) + " " + ChatFormatting.DARK_GRAY + modifier.getDisplayStringNameSupplier().get()));
 
             if (modifier instanceof IModifiable<?>)
             {

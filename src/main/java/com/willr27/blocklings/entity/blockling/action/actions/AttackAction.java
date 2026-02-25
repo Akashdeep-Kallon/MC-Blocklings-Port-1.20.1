@@ -52,7 +52,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to try start the action for.
      * @return true if the action was started.
      */
-    public boolean tryStart(BlocklingInteractionHand hand)
+    public boolean tryStart(BlocklingHand hand)
     {
         if (super.tryStart())
         {
@@ -72,7 +72,7 @@ public class AttackAction extends KnownTargetAction
      *
      * @param hand the hand to start the action for.
      */
-    public void start(BlocklingInteractionHand hand)
+    public void start(BlocklingHand hand)
     {
         super.start();
 
@@ -104,7 +104,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to check.
      * @return true if the given hand's action is running.
      */
-    public boolean isRunning(BlocklingInteractionHand hand)
+    public boolean isRunning(BlocklingHand hand)
     {
         if ((hand == BlocklingHand.MAIN && (getRecentHand() == BlocklingHand.MAIN || getRecentHand() == BlocklingHand.BOTH))
          || (hand == BlocklingHand.OFF && (getRecentHand() == BlocklingHand.OFF || getRecentHand() == BlocklingHand.BOTH)))
@@ -119,7 +119,7 @@ public class AttackAction extends KnownTargetAction
      * @param hand the hand to check.
      * @return true if the given hand's action has finished.
      */
-    public boolean isFinished(BlocklingInteractionHand hand)
+    public boolean isFinished(BlocklingHand hand)
     {
         if ((hand == BlocklingHand.MAIN && (getRecentHand() == BlocklingHand.MAIN || getRecentHand() == BlocklingHand.BOTH))
          || (hand == BlocklingHand.OFF && (getRecentHand() == BlocklingHand.OFF || getRecentHand() == BlocklingHand.BOTH)))
@@ -151,7 +151,7 @@ public class AttackAction extends KnownTargetAction
      * @return the most recent hand used to attack.
      */
     @Nonnull
-    public BlocklingInteractionHand getRecentHand()
+    public BlocklingHand getRecentHand()
     {
         return recentHand.getValue();
     }

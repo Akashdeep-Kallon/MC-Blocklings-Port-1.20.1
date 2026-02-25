@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.ITextProperties;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -111,7 +111,7 @@ public abstract class GuiUtil
      * @return the trimmed text.
      */
     @Nonnull
-    public abstract ITextProperties trimWithEllipsis(@Nonnull ITextProperties text, int width);
+    public abstract FormattedText trimWithEllipsis(@Nonnull FormattedText text, int width);
 
     /**
      * Trims the given text to fit within the given width.
@@ -121,7 +121,7 @@ public abstract class GuiUtil
      * @return the trimmed text.
      */
     @Nonnull
-    public abstract ITextProperties trim(@Nonnull ITextProperties text, int width);
+    public abstract FormattedText trim(@Nonnull FormattedText text, int width);
 
     /**
      * Trims the given text to fit within the given width.
@@ -131,7 +131,7 @@ public abstract class GuiUtil
      * @return the split text.
      */
     @Nonnull
-    public abstract List<IReorderingProcessor> split(@Nonnull ITextProperties text, int width);
+    public abstract List<FormattedCharSequence> split(@Nonnull FormattedText text, int width);
 
     /**
      * Splits the given text to fit within the given width.
@@ -151,7 +151,7 @@ public abstract class GuiUtil
     /**
      * @return the width of the given text.
      */
-    public abstract int getTextWidth(@Nonnull IReorderingProcessor text);
+    public abstract int getTextWidth(@Nonnull FormattedCharSequence text);
 
     /**
      * @return the line height of the current font renderer.
@@ -167,7 +167,7 @@ public abstract class GuiUtil
      * @param y the y position to render the text at.
      * @param color the color to render the text in.
      */
-    public abstract void renderShadowedText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color);
+    public abstract void renderShadowedText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color);
 
     /**
      * Renders shadowed text.
@@ -178,7 +178,7 @@ public abstract class GuiUtil
      * @param y the y position to render the text at.
      * @param color the color to render the text in.
      */
-    public abstract void renderText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color);
+    public abstract void renderText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color);
 
     /**
      * Binds the given texture.
@@ -206,7 +206,7 @@ public abstract class GuiUtil
      * @param scale the scale to render the entity at (scale of 1 means 1/16 block to 1 screen pixel).
      * @param scaleToBoundingBox whether to scale the entity based on its bounding box (essentially scale up/down relatively to a single block hitbox).
      */
-    public abstract void renderEntityOnScreen(@Nonnull MatrixStack matrixStack, @Nonnull LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox);
+    public abstract void renderEntityOnScreen(@Nonnull PoseStack matrixStack, @Nonnull LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox);
 
     /**
      * Renders an item stack on the screen.
@@ -218,7 +218,7 @@ public abstract class GuiUtil
      * @param scale the scale to render the item stack at (scale of 1 means 1/16 block to 1 screen pixel).
      * @param z the z position to render the item stack at.
      */
-    public abstract void renderItemStack(@Nonnull MatrixStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale);
+    public abstract void renderItemStack(@Nonnull PoseStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale);
 
     public static void enableScissor()
     {

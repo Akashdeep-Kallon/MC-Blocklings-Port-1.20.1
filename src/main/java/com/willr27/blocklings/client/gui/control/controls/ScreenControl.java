@@ -189,9 +189,9 @@ public class ScreenControl extends Control
     }
 
     /**
-     * Mimics {@link Screen#render(MatrixStack, int, int, float)}.
+     * Mimics {@link Screen#render(PoseStack, int, int, float)}.
      */
-    public void render(@Nonnull MatrixStack matrixStack, int screenMouseX, int screenMouseY, float partialTicks)
+    public void render(@Nonnull PoseStack matrixStack, int screenMouseX, int screenMouseY, float partialTicks)
     {
         float guiScale = GuiUtil.get().getGuiScale();
         double mouseX = GuiUtil.get().getPixelMouseX();
@@ -236,7 +236,7 @@ public class ScreenControl extends Control
     }
 
     @Override
-    protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+    protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
     {
 
     }

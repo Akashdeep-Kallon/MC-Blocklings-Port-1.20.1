@@ -16,10 +16,10 @@ import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.attribute.Attribute;
 import com.willr27.blocklings.entity.blockling.attribute.BlocklingAttributes;
 import com.willr27.blocklings.util.BlocklingsComponent;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -54,7 +54,7 @@ public class HealthBarControl extends Control
         TexturedControl backgroundHealthBarControl = new TexturedControl(Textures.Stats.HEALTH_BAR)
         {
             @Override
-            public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 RenderSystem.color3f(0.5f, 0.5f, 0.5f);
                 super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
@@ -74,7 +74,7 @@ public class HealthBarControl extends Control
             }
 
             @Override
-            public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 RenderSystem.color3f((float) (1.3f - (Math.ceil(blockling.getHealth()) / blockling.getMaxHealth())), 0.3f + (float) (Math.ceil(blockling.getHealth()) / blockling.getMaxHealth()), 0.1f);
                 super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
@@ -112,12 +112,12 @@ public class HealthBarControl extends Control
     }
 
     @Override
-    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
     {
-        List<ITextComponent> tooltip = StatsScreen.createModifiableFloatAttributeTooltip(blockling.getStats().maxHealth, TextFormatting.DARK_GREEN);
-        tooltip.add(0, new Component(TextFormatting.GOLD + new Attribute.AttributeComponent("health.name").getString()));
+        List<Component> tooltip = StatsScreen.createModifiableFloatAttributeTooltip(blockling.getStats().maxHealth, ChatFormatting.DARK_GREEN);
+        tooltip.add(0, Component.literal(ChatFormatting.GOLD + new Attribute.AttributeComponent("health.name").getString()));
 
-        renderTooltip(matrixStack, mouseX, mouseY, tooltip.stream().map(ITextComponent::getVisualOrderText).collect(Collectors.toList()));
+        renderTooltip(matrixStack, mouseX, mouseY, tooltip.stream().map(Component::getVisualOrderText).collect(Collectors.toList()));
     }
 
 }

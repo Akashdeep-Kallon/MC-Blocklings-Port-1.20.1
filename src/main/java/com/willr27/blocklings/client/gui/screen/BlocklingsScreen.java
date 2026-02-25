@@ -35,7 +35,7 @@ public class BlocklingsScreen extends Screen
      */
     protected BlocklingsScreen(@Nonnull BlocklingEntity blockling)
     {
-        super(new Component(""));
+        super(Component.literal(""));
         this.blockling = blockling;
     }
 
@@ -67,7 +67,7 @@ public class BlocklingsScreen extends Screen
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         screenControl.render(matrixStack, mouseX, mouseY, partialTicks);
     }

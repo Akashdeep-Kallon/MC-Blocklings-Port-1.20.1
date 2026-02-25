@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public abstract class AbstractInventory implements IInventory, IReadWriteNBT
+public abstract class AbstractInventory implements Container, IReadWriteNBT
 {
     public final int invSize;
 

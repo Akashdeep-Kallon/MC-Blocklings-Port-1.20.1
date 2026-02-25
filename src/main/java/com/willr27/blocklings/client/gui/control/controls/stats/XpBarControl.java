@@ -13,9 +13,9 @@ import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.attribute.Attribute;
 import com.willr27.blocklings.entity.blockling.attribute.BlocklingAttributes;
 import com.willr27.blocklings.util.BlocklingsComponent;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -109,14 +109,14 @@ public class XpBarControl extends Control
     }
 
     @Override
-    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
     {
         Attribute<Integer> level = blockling.getStats().getLevelAttribute(this.level);
 
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
-        tooltip.add(new Component(TextFormatting.GOLD + blockling.getStats().getLevelAttribute(this.level).displayStringNameSupplier.get()).getVisualOrderText());
-        tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("gui.current_level", TextFormatting.WHITE, level.getValue()).getString()).getVisualOrderText());
-        tooltip.add(new Component(TextFormatting.GRAY + new BlocklingsComponent("gui.xp_required", TextFormatting.WHITE, blockling.getStats().getLevelXpAttribute(this.level).getValue(), BlocklingAttributes.getXpForLevel(level.getValue())).getString()).getVisualOrderText());
+        List<FormattedCharSequence> tooltip = new ArrayList<>();
+        tooltip.add(Component.literal(ChatFormatting.GOLD + blockling.getStats().getLevelAttribute(this.level).displayStringNameSupplier.get()).getVisualOrderText());
+        tooltip.add(Component.literal(ChatFormatting.GRAY + new BlocklingsComponent("gui.current_level", ChatFormatting.WHITE, level.getValue()).getString()).getVisualOrderText());
+        tooltip.add(Component.literal(ChatFormatting.GRAY + new BlocklingsComponent("gui.xp_required", ChatFormatting.WHITE, blockling.getStats().getLevelXpAttribute(this.level).getValue(), BlocklingAttributes.getXpForLevel(level.getValue())).getString()).getVisualOrderText());
 
         renderTooltip(matrixStack, mouseX, mouseY, getPixelScaleX(), getPixelScaleY(), tooltip);
     }
@@ -158,7 +158,7 @@ public class XpBarControl extends Control
         }
 
         @Override
-        public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+        public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
         {
             int iconToRender = (int) (((float) (blockling.getStats().getLevelAttribute(level).getValue() + (current ? 0 : 1)) / BlocklingAttributes.Level.MAX) * (Textures.Stats.LevelIconsTexture.NUMBER_OF_ICONS - 1));
 

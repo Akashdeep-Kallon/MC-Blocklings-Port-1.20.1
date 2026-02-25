@@ -114,14 +114,14 @@ public class NetworkHandler
         {
             try
             {
-                T message = messageType.newInstance();
+                T message = messageType.getDeclaredConstructor().newInstance();
                 message.decode(buf);
 
                 return message;
             }
-            catch (InstantiationException | IllegalAccessException e)
+            catch (ReflectiveOperationException e)
             {
-                Blocklings.LOGGER.warn(e.getLocalizedMessage());
+                Blocklings.LOGGER.warn("Failed to decode network message {}", messageType.getName(), e);
 
                 return null;
             }

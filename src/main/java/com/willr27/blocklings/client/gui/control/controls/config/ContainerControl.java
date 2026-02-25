@@ -28,12 +28,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.vector.Quaternion;
 import net.minecraft.core.vector.Vector3f;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -155,7 +155,7 @@ public class ContainerControl extends GridPanel
         TexturedControl iconBackground = new TexturedControl(Textures.Tasks.TASK_ICON_BACKGROUND_RAISED, Textures.Tasks.TASK_ICON_BACKGROUND_PRESSED)
         {
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("config.container.remove", new ItemStack(containerInfo.getBlock()).getHoverName().getString()));
             }
@@ -208,7 +208,7 @@ public class ContainerControl extends GridPanel
         TexturedControl nameBackground = new TexturedControl(Textures.Common.BAR_RAISED)
         {
             @Override
-            protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (isHovered() && getDraggedControl() == null)
                 {
@@ -222,7 +222,7 @@ public class ContainerControl extends GridPanel
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTooltip(matrixStack, mouseX, mouseY, name.getText());
             }
@@ -274,7 +274,7 @@ public class ContainerControl extends GridPanel
         dropdownGrid = new GridPanel()
         {
             @Override
-            protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 Texture texture = Textures.Common.BAR_FLAT.dy(1).dHeight(-2).width((int) getWidth());
                 Texture endTexture = Textures.Common.BAR_FLAT.dy(1).dHeight(-2).width(2).x(Textures.Common.BAR_FLAT.width - 2);
@@ -321,7 +321,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl xLabel = new TextBlockControl();
         xGrid.addChild(xLabel, 0, 0);
         xLabel.setFitWidthToContent(true);
-        xLabel.setText(new Component("X"));
+        xLabel.setText(Component.literal("X"));
         xLabel.setMarginLeft(5.0);
         xLabel.setMarginRight(4.0);
         xLabel.setVerticalAlignment(0.5);
@@ -329,7 +329,7 @@ public class ContainerControl extends GridPanel
         xLocation = new IntFieldControl();
         xGrid.addChild(xLocation, 0, 1);
         xLocation.setWidthPercentage(1.0);
-        xLocation.setText(new Component("1000"));
+        xLocation.setText(Component.literal("1000"));
         xLocation.setHorizontalContentAlignment(0.5);
         xLocation.setHeight(16.0);
         xLocation.setValue(containerInfo.getX());
@@ -352,7 +352,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl yLabel = new TextBlockControl();
         yGrid.addChild(yLabel, 0, 0);
         yLabel.setFitWidthToContent(true);
-        yLabel.setText(new Component("Y"));
+        yLabel.setText(Component.literal("Y"));
         yLabel.setMarginLeft(5.0);
         yLabel.setMarginRight(4.0);
         yLabel.setVerticalAlignment(0.5);
@@ -360,7 +360,7 @@ public class ContainerControl extends GridPanel
         yLocation = new IntFieldControl();
         yGrid.addChild(yLocation, 0, 1);
         yLocation.setWidthPercentage(1.0);
-        yLocation.setText(new Component("1000"));
+        yLocation.setText(Component.literal("1000"));
         yLocation.setHorizontalContentAlignment(0.5);
         yLocation.setHeight(16.0);
         yLocation.setValue(containerInfo.getY());
@@ -383,7 +383,7 @@ public class ContainerControl extends GridPanel
         TextBlockControl zLabel = new TextBlockControl();
         zGrid.addChild(zLabel, 0, 0);
         zLabel.setFitWidthToContent(true);
-        zLabel.setText(new Component("Z"));
+        zLabel.setText(Component.literal("Z"));
         zLabel.setMarginLeft(5.0);
         zLabel.setMarginRight(4.0);
         zLabel.setVerticalAlignment(0.5);
@@ -391,7 +391,7 @@ public class ContainerControl extends GridPanel
         zLocation = new IntFieldControl();
         zGrid.addChild(zLocation, 0, 1);
         zLocation.setWidthPercentage(1.0);
-        zLocation.setText(new Component("1000"));
+        zLocation.setText(Component.literal("1000"));
         zLocation.setHorizontalContentAlignment(0.5);
         zLocation.setHeight(16.0);
         zLocation.setValue(containerInfo.getZ());
@@ -405,7 +405,7 @@ public class ContainerControl extends GridPanel
         sidePriority = new BlockSideSelectionControl()
         {
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 Direction mouseOverDirection = getDirectionMouseIsOver();
                 BlocklingsComponent name = new BlocklingsComponent("config.container.side_priority.name");
@@ -435,9 +435,9 @@ public class ContainerControl extends GridPanel
                     }
                 }
 
-                List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(name.withStyle(TextFormatting.WHITE).getVisualOrderText());
-                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.container.side_priority.desc").withStyle(TextFormatting.GRAY), 200));
+                List<FormattedCharSequence> tooltip = new ArrayList<>();
+                tooltip.add(name.withStyle(ChatFormatting.WHITE).getVisualOrderText());
+                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.container.side_priority.desc").withStyle(ChatFormatting.GRAY), 200));
 
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }

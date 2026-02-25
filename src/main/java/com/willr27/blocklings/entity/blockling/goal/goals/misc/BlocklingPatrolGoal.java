@@ -26,10 +26,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.ChatFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -500,7 +500,7 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
         TexturedControl addContainerButton = new TexturedControl(Textures.Common.PLUS_ICON)
         {
             @Override
-            protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (isPatrolPointListFull())
                 {
@@ -513,13 +513,13 @@ public class BlocklingPatrolGoal extends BlocklingTargetGoal<PatrolPoint> implem
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
-                List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(new BlocklingsComponent("config.patrol.add").withStyle(isPatrolPointListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                tooltip.add(new BlocklingsComponent("config.patrol.amount", getOrderedPatrolPointList().size(), MAX_PATROL_POINTS).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                List<FormattedCharSequence> tooltip = new ArrayList<>();
+                tooltip.add(new BlocklingsComponent("config.patrol.add").withStyle(isPatrolPointListFull() ? ChatFormatting.GRAY : ChatFormatting.WHITE).getVisualOrderText());
+                tooltip.add(new BlocklingsComponent("config.patrol.amount", getOrderedPatrolPointList().size(), MAX_PATROL_POINTS).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                 tooltip.add(Component.EMPTY.getVisualOrderText());
-                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.patrol.add.help", new Component(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.ITALIC)).withStyle(TextFormatting.GRAY), 200));
+                tooltip.addAll(GuiUtil.get().split(new BlocklingsComponent("config.patrol.add.help", Component.literal(Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.ITALIC)).withStyle(ChatFormatting.GRAY), 200));
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }
 

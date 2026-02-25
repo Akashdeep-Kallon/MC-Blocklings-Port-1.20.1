@@ -1,15 +1,13 @@
 package com.willr27.blocklings.block;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BlockState;
-import net.minecraft.world.level.block.material.Material;
-import net.minecraft.world.level.block.material.MaterialColor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.shapes.ISelectionContext;
-import net.minecraft.core.shapes.VoxelShape;
-import net.minecraft.core.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * An invisible block that emits light.
@@ -22,19 +20,18 @@ public class LightBlock extends Block
      */
     public LightBlock()
     {
-        super(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.NONE)
+        super(BlockBehaviour.Properties.of()
+                .air()
                 .replaceable()
-                .nonSolid()
-                .build())
-                .noDrops()
+                .instabreak()
                 .noOcclusion()
                 .noCollission()
                 .lightLevel((blockState) -> 15));
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, IBlockReader blockReader, BlockPos blockPos, ISelectionContext selectionContext)
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext)
     {
-        return VoxelShapes.empty();
+        return Shapes.empty();
     }
 }

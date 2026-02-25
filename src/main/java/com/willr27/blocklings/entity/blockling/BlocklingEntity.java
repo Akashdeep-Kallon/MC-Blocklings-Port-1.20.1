@@ -22,40 +22,45 @@ import com.willr27.blocklings.network.messages.BlocklingScaleMessage;
 import com.willr27.blocklings.network.messages.BlocklingTypeMessage;
 import com.willr27.blocklings.util.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.IPacket;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.effect.EffectInstance;
-import net.minecraft.world.effect.Effects;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.util.*;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.chat.event.ClickEvent;
-import net.minecraft.network.chat.event.HoverEvent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
@@ -220,7 +225,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     /**
      * @return the additional attributes to add to the entity.
      */
-    public static AttributeModifierMap.MutableAttribute createAttributes()
+    public static AttributeSupplier.Builder createAttributes()
     {
         return Mob.createMobAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 0.0)
@@ -230,11 +235,11 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
     @Override
     @Nullable
-    public ILivingEntityData finalizeSpawn(@Nonnull IServerLevel world, @Nonnull DifficultyInstance difficultyInstance, @Nonnull SpawnReason spawnReason, @Nullable ILivingEntityData entityData, @Nullable CompoundTag entityTag)
+    public SpawnGroupData finalizeSpawn(@Nonnull ServerLevelAccessor world, @Nonnull DifficultyInstance difficultyInstance, @Nonnull MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityTag)
     {
         tasks.initDefaultTasks();
 
-        if (spawnReason == SpawnReason.SPAWN_EGG && entityTag != null)
+        if (spawnReason == MobSpawnType.SPAWN_EGG && entityTag != null)
         {
             readAdditionalSaveData(entityTag);
         }
@@ -246,13 +251,13 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
                 {
                     BlockPos blockPos = blockPosition();
 
-                    ITextComponent locationLink = TextComponentUtils.wrapInSquareBrackets(
-                            new Component("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()))
-                                .withStyle((style) -> style.withColor(TextFormatting.GREEN)
+                    Component locationLink = TextComponentUtils.wrapInSquareBrackets(
+                            Component.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()))
+                                .withStyle((style) -> style.withColor(ChatFormatting.GREEN)
                                 .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ()))
-                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Component("chat.coordinates.tooltip"))));
+                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip"))));
 
-                    ITextComponent text = new BlocklingsComponent("command.debug.spawns.spawn", blocklingType.name.getString()).append(locationLink);
+                    Component text = new BlocklingsComponent("command.debug.spawns.spawn", blocklingType.name.getString()).append(locationLink);
 
                     world.getPlayerByUUID(playerId).sendMessage(text, Util.NIL_UUID);
                 }
@@ -386,7 +391,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     }
 
     @Override
-    public @Nonnull IPacket<?> getAddEntityPacket()
+    public @Nonnull Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
@@ -530,7 +535,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
                    if (belowBlock == Blocks.DIRT)
                    {
-                       level.setBlock(belowPos, Blocks.GRASS_BLOCK.defaultBlockState(), Constants.BlockFlags.DEFAULT);
+                       level.setBlock(belowPos, Blocks.GRASS_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
                    }
                }
            }
@@ -544,7 +549,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
                    if (belowBlock == Blocks.GRASS_BLOCK)
                    {
-                       level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), Constants.BlockFlags.DEFAULT);
+                       level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
                    }
                }
            }
@@ -623,7 +628,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
                if (owner != null && owner.distanceToSqr(this) < range * range)
                {
-                    owner.addEffect(new EffectInstance(Effects.LUCK, 419, level - 1, false, false, true));
+                    owner.addEffect(new MobEffectInstance(MobEffects.LUCK, 419, level - 1, false, false, true));
                }
            }
         }
@@ -654,7 +659,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
                     if (block.getBlock().isAir(blockState, level, blockPos) || (currentLightPos == null && block == BlocklingsBlocks.LIGHT.get()))
                     {
-                        level.setBlock(currentLightPos = blockPos, BlocklingsBlocks.LIGHT.get().defaultBlockState(), Constants.BlockFlags.DEFAULT);
+                        level.setBlock(currentLightPos = blockPos, BlocklingsBlocks.LIGHT.get().defaultBlockState(), Block.UPDATE_ALL);
 
                         break;
                     }
@@ -742,7 +747,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
             {
                 if (mainHandTinkersTool && ToolUtil.isUseableTool(mainStack))
                 {
-                    if (TinkersConstructProxy.instance.attackEntity(mainStack, this, Hand.MAIN_HAND, target, () -> 1.0, false))
+                    if (TinkersConstructProxy.instance.attackEntity(mainStack, this, InteractionHand.MAIN_HAND, target, () -> 1.0, false))
                     {
                         tinkersDamage += stats.mainHandAttackDamage.getValue(); // This won't take into account Tinkers' modifiers but is good enough.
                         hasHurt = true;
@@ -761,7 +766,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
             {
                 if (offHandTinkersTool && ToolUtil.isUseableTool(offStack))
                 {
-                    if (TinkersConstructProxy.instance.attackEntity(offStack, this, Hand.MAIN_HAND, target, () -> 1.0, false))
+                    if (TinkersConstructProxy.instance.attackEntity(offStack, this, InteractionHand.MAIN_HAND, target, () -> 1.0, false))
                     {
                         tinkersDamage += stats.offHandAttackDamage.getValue(); // This won't take into account Tinkers' modifiers but is good enough.
                         hasHurt = true;
@@ -788,15 +793,15 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
             if (skills.getSkill(CombatSkills.POISON_ATTACKS).isBought())
             {
-                livingTarget.addEffect(new EffectInstance(Effects.POISON, 100));
+                livingTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
             }
             else if (skills.getSkill(CombatSkills.WITHER_ATTACKS).isBought())
             {
-                livingTarget.addEffect(new EffectInstance(Effects.WITHER, 60));
+                livingTarget.addEffect(new MobEffectInstance(MobEffects.WITHER, 60));
             }
         }
 
-        ModifiableAttributeInstance damageAttribute = getAttribute(Attributes.ATTACK_DAMAGE);
+        AttributeInstance damageAttribute = getAttribute(Attributes.ATTACK_DAMAGE);
         Optional<AttributeModifier> strengthModifier = damageAttribute.getModifiers().stream().filter(attributeModifier -> attributeModifier.getId().equals(UUID.fromString("648D7064-6A60-4F59-8ABE-C2C23A6DD7A9"))).findFirst();
 
         if (strengthModifier.isPresent())
@@ -808,7 +813,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
         {
             int invulnerableTime = target.invulnerableTime;
             target.invulnerableTime = 0;
-            hasHurt = target.hurt(DamageSource.mobAttack(this), damage);
+            hasHurt = target.hurt(damageSources().mobAttack(this), damage);
             target.invulnerableTime = invulnerableTime;
         }
 
@@ -818,7 +823,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
             if (knockback > 0.0f)
             {
-                ((LivingEntity) target).knockback(knockback * 0.5f, (double) Mth.sin(this.yRot * ((float) Math.PI / 180.0f)), (-Mth.cos(this.yRot * ((float) Math.PI / 180.0f))));
+                ((LivingEntity) target).knockback(knockback * 0.5f, (double) Mth.sin(this.getYRot() * ((float) Math.PI / 180.0f)), (-Mth.cos(this.getYRot() * ((float) Math.PI / 180.0f))));
                 setDeltaMovement(getDeltaMovement().multiply(0.6, 1.0, 0.6));
             }
 
@@ -918,7 +923,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
                 {
                     if (naturalBlocklingType == BlocklingType.QUARTZ || blocklingType == BlocklingType.QUARTZ)
                     {
-                        attacker.hurt(DamageSource.mobAttack(this), damage / 15.0f);
+                        attacker.hurt(damageSources().mobAttack(this), damage / 15.0f);
                     }
 
                     if (naturalBlocklingType == BlocklingType.OBSIDIAN || blocklingType == BlocklingType.OBSIDIAN)
@@ -961,7 +966,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     {
         InteractionResult result;
 
-        if (hand == Hand.MAIN_HAND)
+        if (hand == InteractionHand.MAIN_HAND)
         {
             result = mobInteractMainHand(player);
         }
@@ -987,7 +992,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     @Nonnull
     private InteractionResult mobInteractMainHand(@Nonnull Player player)
     {
-        ItemStack stack = player.getItemInHand(Hand.MAIN_HAND);
+        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
         Item item = stack.getItem();
 
         if (item == BLOCKLING_WHISTLE.get())
@@ -1117,7 +1122,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     @Nonnull
     private InteractionResult mobInteractOffHand(@Nonnull Player player)
     {
-        ItemStack stack = player.getItemInHand(Hand.OFF_HAND);
+        ItemStack stack = player.getItemInHand(InteractionHand.OFF_HAND);
         Item item = stack.getItem();
 
         return InteractionResult.PASS;
@@ -1161,7 +1166,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
         if (!hasCustomName())
         {
-            setCustomName(new Component("Blockling"), true);
+            setCustomName(Component.literal("Blockling"), true);
         }
     }
 
@@ -1194,14 +1199,14 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     @Nonnull
     public ItemStack getMainHandItem()
     {
-        return getItemInHand(Hand.MAIN_HAND);
+        return getItemInHand(InteractionHand.MAIN_HAND);
     }
 
     @Override
     @Nonnull
     public ItemStack getOffhandItem()
     {
-        return getItemInHand(Hand.OFF_HAND);
+        return getItemInHand(InteractionHand.OFF_HAND);
     }
 
     @Override
@@ -1250,13 +1255,13 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     }
 
     @Override
-    public boolean hasItemInSlot(@Nonnull EquipmentSlotType slotType)
+    public boolean hasItemInSlot(@Nonnull EquipmentSlot slotType)
     {
-        if (slotType == EquipmentSlotType.MAINHAND)
+        if (slotType == EquipmentSlot.MAINHAND)
         {
             return !getMainHandItem().isEmpty();
         }
-        else if (slotType == EquipmentSlotType.OFFHAND)
+        else if (slotType == EquipmentSlot.OFFHAND)
         {
             return !getOffhandItem().isEmpty();
         }
@@ -1266,13 +1271,13 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
     @Override
     @Nonnull
-    public ItemStack getItemBySlot(@Nonnull EquipmentSlotType slotType)
+    public ItemStack getItemBySlot(@Nonnull EquipmentSlot slotType)
     {
-        if (slotType == EquipmentSlotType.MAINHAND)
+        if (slotType == EquipmentSlot.MAINHAND)
         {
             return getMainHandItem();
         }
-        else if (slotType == EquipmentSlotType.OFFHAND)
+        else if (slotType == EquipmentSlot.OFFHAND)
         {
             return getOffhandItem();
         }
@@ -1281,37 +1286,37 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
     }
 
     @Override
-    public void setItemSlot(@Nonnull EquipmentSlotType slotType, @Nonnull ItemStack stack)
+    public void setItemSlot(@Nonnull EquipmentSlot slotType, @Nonnull ItemStack stack)
     {
-        if (slotType == EquipmentSlotType.MAINHAND)
+        if (slotType == EquipmentSlot.MAINHAND)
         {
-            setItemInHand(Hand.MAIN_HAND, stack);
+            setItemInHand(InteractionHand.MAIN_HAND, stack);
         }
-        else if (slotType == EquipmentSlotType.OFFHAND)
+        else if (slotType == EquipmentSlot.OFFHAND)
         {
-            setItemInHand(Hand.OFF_HAND, stack);
+            setItemInHand(InteractionHand.OFF_HAND, stack);
         }
     }
 
     /**
      * @return true as the blockling needs to be created before it can decide whether it can spawn.
      */
-    public static boolean checkBlocklingSpawnRules(EntityType<? extends Animal> p_223316_0_, ILevel p_223316_1_, SpawnReason p_223316_2_, BlockPos p_223316_3_, Random p_223316_4_)
+    public static boolean checkBlocklingSpawnRules(EntityType<? extends Animal> p_223316_0_, LevelAccessor p_223316_1_, MobSpawnType p_223316_2_, BlockPos p_223316_3_, Random p_223316_4_)
     {
         return true;
     }
 
     @Override
-    public boolean checkSpawnRules(@Nonnull ILevel world, @Nonnull SpawnReason reason)
+    public boolean checkSpawnRules(@Nonnull LevelAccessor world, @Nonnull MobSpawnType reason)
     {
-        if (reason == SpawnReason.NATURAL || reason == SpawnReason.CHUNK_GENERATION)
+        if (reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION)
         {
             if (random.nextInt(blocklingType.spawnRateReduction) != 0)
             {
                 return false;
             }
 
-            if (!world.getBlockState(getOnPos()).getMaterial().isSolid())
+            if (!world.getBlockState(getOnPos()).isSolid())
             {
                 return false;
             }
@@ -1330,7 +1335,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
                 return false;
             }
 
-            for (BiPredicate<BlocklingEntity, IWorld> predicate : getBlocklingType().spawnPredicates)
+            for (BiPredicate<BlocklingEntity, Level> predicate : getBlocklingType().spawnPredicates)
             {
                 if (!predicate.test(this, world))
                 {
@@ -1373,7 +1378,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
     @Nullable
     @Override
-    public AgeableEntity getBreedOffspring(@Nonnull ServerLevel world, @Nonnull AgeableEntity entity)
+    public AgeableMob getBreedOffspring(@Nonnull ServerLevel world, @Nonnull AgeableMob entity)
     {
         return null;
     }
@@ -1401,14 +1406,14 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
      * @param name the new name.
      */
     @Override
-    public void setCustomName(@Nullable ITextComponent name)
+    public void setCustomName(@Nullable Component name)
     {
         if (name != null)
         {
-            name = new Component(name.getString());
+            name = Component.literal(name.getString());
         }
 
-        setCustomName((Component) name, false);
+        setCustomName(name, false);
     }
 
     /**

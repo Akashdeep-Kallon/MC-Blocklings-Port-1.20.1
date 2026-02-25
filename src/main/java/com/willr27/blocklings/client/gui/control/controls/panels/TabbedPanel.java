@@ -12,7 +12,7 @@ import com.willr27.blocklings.client.gui.texture.Texture;
 import com.willr27.blocklings.client.gui.texture.Textures;
 import com.willr27.blocklings.client.gui.util.ScissorBounds;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +29,7 @@ public class TabbedPanel extends Control
      * The tabs' container.
      */
     @Nonnull
-    private final TabAbstractContainerMenu tabContainer;
+    private final TabContainer tabContainer;
 
     /**
      * The container container.
@@ -52,12 +52,12 @@ public class TabbedPanel extends Control
         setWidthPercentage(1.0);
         setHeightPercentage(1.0);
 
-        containerAbstractContainerMenu = new Control();
+        containerContainer = new Control();
         containerContainer.setParent(this);
         containerContainer.setWidthPercentage(1.0);
         containerContainer.setHeightPercentage(1.0);
 
-        tabAbstractContainerMenu = new TabContainer();
+        tabContainer = new TabContainer();
         tabContainer.setParent(this);
     }
 
@@ -82,7 +82,7 @@ public class TabbedPanel extends Control
     @Override
     public void addChild(@Nonnull BaseControl child)
     {
-        if (child != tabAbstractContainerMenu && child != containerContainer)
+        if (child != tabContainer && child != containerContainer)
         {
             throw new UnsupportedOperationException("Cannot add child to TabbedPanel. Use TabbedPanel#addTab() instead.");
         }
@@ -115,7 +115,7 @@ public class TabbedPanel extends Control
      * @return the tab's content container.
      */
     @Nonnull
-    public BaseControl addTab(@Nonnull ITextComponent name)
+    public BaseControl addTab(@Nonnull Component name)
     {
         TabControl tab = new TabControl(name);
         tabContainer.addChild(tab);
@@ -139,7 +139,7 @@ public class TabbedPanel extends Control
      *
      * @param name the tab's name.
      */
-    public void removeTab(@Nonnull ITextComponent name)
+    public void removeTab(@Nonnull Component name)
     {
         int i = 0;
 
@@ -265,7 +265,7 @@ public class TabbedPanel extends Control
          * The tab's name.
          */
         @Nonnull
-        public ITextComponent name;
+        public Component name;
 
         /**
          * The tab background texture.
@@ -282,7 +282,7 @@ public class TabbedPanel extends Control
         /**
          * @param name the tab's name.
          */
-        public TabControl(@Nonnull ITextComponent name)
+        public TabControl(@Nonnull Component name)
         {
             super();
             this.name = name;
@@ -301,7 +301,7 @@ public class TabbedPanel extends Control
         }
 
         @Override
-        protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+        protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
         {
             RenderSystem.disableDepthTest();
 
@@ -329,7 +329,7 @@ public class TabbedPanel extends Control
         }
 
         @Override
-        public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+        public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
         {
             renderTooltip(matrixStack, mouseX, mouseY, name);
         }
@@ -562,4 +562,3 @@ public class TabbedPanel extends Control
         }
     }
 }
-

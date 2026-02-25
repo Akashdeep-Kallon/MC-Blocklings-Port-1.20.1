@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * The container for the blockling's equipment.
@@ -28,7 +29,7 @@ public class EquipmentContainer extends AbstractContainerMenu
     /**
      * The blockling.
      */
-    @Nonnull
+    @Nullable
     public final BlocklingEntity blockling;
 
     /**
@@ -36,26 +37,24 @@ public class EquipmentContainer extends AbstractContainerMenu
      * @param player the player opening the container.
      * @param blockling the blockling.
      */
-    public EquipmentContainer(int windowId, @Nonnull Player player, @Nonnull BlocklingEntity blockling)
+    public EquipmentContainer(int windowId, @Nonnull Player player, @Nullable BlocklingEntity blockling)
     {
-        super(null, windowId);
+        super(BlocklingsMenuTypes.EQUIPMENT.get(), windowId);
         this.blockling = blockling;
 
-        if (!player.level.isClientSide)
+        if (blockling != null)
         {
-            
-        }
+            EquipmentInventory blocklingInv = blockling.getEquipment();
 
-        EquipmentInventory blocklingInv = blockling.getEquipment();
+            addSlot(new ToolSlot(blocklingInv, EquipmentInventory.TOOL_MAIN_HAND, 12, PLAYER_INV_Y - 22));
+            addSlot(new ToolSlot(blocklingInv, EquipmentInventory.TOOL_OFF_HAND, 36, PLAYER_INV_Y - 22));
 
-        addSlot(new ToolSlot(blocklingInv, EquipmentInventory.TOOL_MAIN_HAND, 12, PLAYER_INV_Y - 22));
-        addSlot(new ToolSlot(blocklingInv, EquipmentInventory.TOOL_OFF_HAND, 36, PLAYER_INV_Y - 22));
-
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 6; j++)
+            for (int i = 0; i < 4; i++)
             {
-                addSlot(new Slot(blocklingInv, j + i * 6 + 2, PLAYER_INV_X + (j * 18) + 54, PLAYER_INV_Y + (i * 18) - 76));
+                for (int j = 0; j < 6; j++)
+                {
+                    addSlot(new Slot(blocklingInv, j + i * 6 + 2, PLAYER_INV_X + (j * 18) + 54, PLAYER_INV_Y + (i * 18) - 76));
+                }
             }
         }
 
@@ -106,7 +105,10 @@ public class EquipmentContainer extends AbstractContainerMenu
             }
         }
 
-        blockling.getEquipment().updateToolAttributes();
+        if (blockling != null)
+        {
+            blockling.getEquipment().updateToolAttributes();
+        }
 
         return ItemStack.EMPTY;
     }

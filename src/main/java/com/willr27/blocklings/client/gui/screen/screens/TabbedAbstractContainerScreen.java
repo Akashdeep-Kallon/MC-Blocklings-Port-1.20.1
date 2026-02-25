@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  * A base screen for all tabbed blockling screens.
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class TabbedAbstractContainerScreen<T extends Container> extends BlocklingsAbstractContainerScreen<T>
+public abstract class TabbedAbstractContainerScreen<T extends AbstractContainerMenu> extends BlocklingsAbstractContainerScreen<T>
 {
     /**
      * The tabbed UI control.

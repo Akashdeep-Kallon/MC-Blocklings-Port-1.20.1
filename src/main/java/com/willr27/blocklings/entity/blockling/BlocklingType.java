@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -245,7 +245,7 @@ public class BlocklingType
      * The list of predicates that need to be met for a blockling to spawn with for the blockling type.
      */
     @Nonnull
-    public final List<BiPredicate<BlocklingEntity, IWorld>> spawnPredicates = new ArrayList<>();
+    public final List<BiPredicate<BlocklingEntity, LevelAccessor>> spawnPredicates = new ArrayList<>();
 
     /**
      * @param key the key used to identify the blockling type (for things like translation text components).
@@ -519,9 +519,9 @@ public class BlocklingType
      * @return true if the blockling is one of the given dimensions.
      */
     @SafeVarargs
-    private static boolean isInWorld(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull RegistryKey<World>... worldTypes)
+    private static boolean isInWorld(@Nonnull BlocklingEntity blockling, @Nonnull Level world, @Nonnull ResourceKey<Level>... worldTypes)
     {
-        for (RegistryKey<World> worldType : worldTypes)
+        for (ResourceKey<Level> worldType : worldTypes)
         {
             if (blockling.level.dimension() == worldType)
             {
@@ -538,9 +538,9 @@ public class BlocklingType
      * @return true if the blockling is one of the given biomes.
      */
     @SafeVarargs
-    private static boolean isInBiome(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull RegistryKey<Biome>... biomes)
+    private static boolean isInBiome(@Nonnull BlocklingEntity blockling, @Nonnull Level world, @Nonnull ResourceKey<Biome>... biomes)
     {
-        for (RegistryKey<Biome> biome : biomes)
+        for (ResourceKey<Biome> biome : biomes)
         {
             if (world.getBiome(blockling.blockPosition()).getRegistryName() == biome.getRegistryName())
             {
@@ -555,7 +555,7 @@ public class BlocklingType
      * @param world the world the blockling is in.
      * @return true if the blockling can see the sky.
      */
-    private static boolean canSeeSky(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world)
+    private static boolean canSeeSky(@Nonnull BlocklingEntity blockling, @Nonnull Level world)
     {
         return world.canSeeSky(blockling.blockPosition());
     }
@@ -566,7 +566,7 @@ public class BlocklingType
      * @param blocks the blocks to check for.
      * @return true if the blockling is on one of the given blocks.
      */
-    private static boolean blockBelowIs(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, @Nonnull Block... blocks)
+    private static boolean blockBelowIs(@Nonnull BlocklingEntity blockling, @Nonnull Level world, @Nonnull Block... blocks)
     {
         Block testBlock = world.getBlockState(blockling.blockPosition().below()).getBlock();
 
@@ -588,7 +588,7 @@ public class BlocklingType
      * @param blocks the blocks to check for.
      * @return true if the blockling is near one of the given blocks.
      */
-    private static boolean blockNearbyIs(@Nonnull BlocklingEntity blockling, @Nonnull ILevel world, int radius, @Nonnull Block... blocks)
+    private static boolean blockNearbyIs(@Nonnull BlocklingEntity blockling, @Nonnull Level world, int radius, @Nonnull Block... blocks)
     {
         int startX = (int) blockling.getX() - radius;
         int startY = (int) blockling.getY() - radius;

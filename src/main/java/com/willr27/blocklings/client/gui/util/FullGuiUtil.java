@@ -17,7 +17,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.vector.Quaternion;
 import net.minecraft.core.vector.Vector3f;
@@ -105,7 +105,7 @@ public class FullGuiUtil extends GuiUtil
 
     @Nonnull
     @Override
-    public ITextProperties trimWithEllipsis(@Nonnull ITextProperties text, int width)
+    public FormattedText trimWithEllipsis(@Nonnull FormattedText text, int width)
     {
         if (text.getString().equals(trim(text, width).getString()))
         {
@@ -113,20 +113,20 @@ public class FullGuiUtil extends GuiUtil
         }
         else
         {
-            return ITextProperties.composite(trim(text, width - mc.font.width("...")), new Component("..."));
+            return FormattedText.composite(trim(text, width - mc.font.width("...")), Component.literal("..."));
         }
     }
 
     @Nonnull
     @Override
-    public ITextProperties trim(@Nonnull ITextProperties text, int width)
+    public FormattedText trim(@Nonnull FormattedText text, int width)
     {
         return Minecraft.getInstance().font.substrByWidth(text, width);
     }
 
     @Nonnull
     @Override
-    public List<IReorderingProcessor> split(@Nonnull ITextProperties text, int width)
+    public List<FormattedCharSequence> split(@Nonnull FormattedText text, int width)
     {
         return new ArrayList<>(mc.font.split(text, width));
     }
@@ -145,7 +145,7 @@ public class FullGuiUtil extends GuiUtil
     }
 
     @Override
-    public int getTextWidth(@Nonnull IReorderingProcessor text)
+    public int getTextWidth(@Nonnull FormattedCharSequence text)
     {
         return mc.font.width(text);
     }
@@ -157,13 +157,13 @@ public class FullGuiUtil extends GuiUtil
     }
 
     @Override
-    public void renderShadowedText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color)
+    public void renderShadowedText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color)
     {
         mc.font.drawShadow(matrixStack, text, x, y, color);
     }
 
     @Override
-    public void renderText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color)
+    public void renderText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color)
     {
         mc.font.draw(matrixStack, text, x, y, color);
     }
@@ -181,7 +181,7 @@ public class FullGuiUtil extends GuiUtil
     }
 
     @Override
-    public void renderEntityOnScreen(@Nonnull MatrixStack matrixStack, @Nonnull LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox)
+    public void renderEntityOnScreen(@Nonnull PoseStack matrixStack, @Nonnull LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox)
     {
         String name = entity.getCustomName() != null ? entity.getCustomName().getString() : null;
         entity.setCustomName(null);
@@ -226,11 +226,11 @@ public class FullGuiUtil extends GuiUtil
         entity.yHeadRot = f6;
         RenderSystem.popMatrix();
         matrixStack.popPose();
-        entity.setCustomName(new Component(name));
+        entity.setCustomName(Component.literal(name));
     }
 
     @Override
-    public void renderItemStack(@Nonnull MatrixStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale)
+    public void renderItemStack(@Nonnull PoseStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale)
     {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         RenderSystem.pushMatrix();
@@ -245,7 +245,7 @@ public class FullGuiUtil extends GuiUtil
         RenderSystem.translatef((float)x, (float)y, (float) z + 7.0f);
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
         RenderSystem.scalef(scale, scale, scale);
-        MatrixStack matrixstack = new MatrixStack();
+        PoseStack matrixstack = new PoseStack();
         IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
         boolean flag = !itemRenderer.getModel(stack, null, null).usesBlockLight();
         if (flag) {

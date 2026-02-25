@@ -6,9 +6,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.ITextProperties;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -85,21 +85,21 @@ public class TestGuiUtil extends GuiUtil
 
     @Nonnull
     @Override
-    public ITextProperties trimWithEllipsis(@Nonnull ITextProperties text, int width)
+    public FormattedText trimWithEllipsis(@Nonnull FormattedText text, int width)
     {
         return text;
     }
 
     @Nonnull
     @Override
-    public ITextProperties trim(@Nonnull ITextProperties text, int width)
+    public FormattedText trim(@Nonnull FormattedText text, int width)
     {
         return text;
     }
 
     @Nonnull
     @Override
-    public List<IReorderingProcessor> split(@Nonnull ITextProperties text, int width)
+    public List<FormattedCharSequence> split(@Nonnull FormattedText text, int width)
     {
         return new ArrayList<>();
     }
@@ -118,7 +118,7 @@ public class TestGuiUtil extends GuiUtil
     }
 
     @Override
-    public int getTextWidth(@Nonnull IReorderingProcessor text)
+    public int getTextWidth(@Nonnull FormattedCharSequence text)
     {
         return 0;
     }
@@ -130,13 +130,13 @@ public class TestGuiUtil extends GuiUtil
     }
 
     @Override
-    public void renderShadowedText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color)
+    public void renderShadowedText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color)
     {
 
     }
 
     @Override
-    public void renderText(@Nonnull MatrixStack matrixStack, @Nonnull IReorderingProcessor text, int x, int y, int color)
+    public void renderText(@Nonnull PoseStack matrixStack, @Nonnull FormattedCharSequence text, int x, int y, int color)
     {
 
     }
@@ -154,13 +154,13 @@ public class TestGuiUtil extends GuiUtil
     }
 
     @Override
-    public void renderEntityOnScreen(@Nullable MatrixStack matrixStack, @Nullable LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox)
+    public void renderEntityOnScreen(@Nullable PoseStack matrixStack, @Nullable LivingEntity entity, int screenX, int screenY, float screenMouseX, float screenMouseY, float scale, boolean scaleToBoundingBox)
     {
 
     }
 
     @Override
-    public void renderItemStack(@Nonnull MatrixStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale)
+    public void renderItemStack(@Nonnull PoseStack matrixStack, @Nonnull ItemStack stack, int x, int y, double z, float scale)
     {
 
     }
