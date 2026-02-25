@@ -2,6 +2,7 @@ package com.willr27.blocklings;
 
 import com.willr27.blocklings.block.BlocklingsBlocks;
 import com.willr27.blocklings.capabilities.BlocklingsCapabilities;
+import com.willr27.blocklings.client.gui.containers.BlocklingsMenuTypes;
 import com.willr27.blocklings.command.BlocklingsCommands;
 import com.willr27.blocklings.config.BlocklingsConfig;
 import com.willr27.blocklings.entity.BlocklingsEntityTypes;
@@ -56,6 +57,7 @@ public class Blocklings
         BlocklingsBlocks.register(modEventBus);
         BlocklingsItems.register(modEventBus);
         BlocklingsSounds.register(modEventBus);
+        BlocklingsMenuTypes.register(modEventBus);
 
         modEventBus.addListener(this::setupCommon);
         modEventBus.addListener(this::setupClient);
