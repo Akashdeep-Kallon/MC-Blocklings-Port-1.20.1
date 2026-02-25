@@ -18,9 +18,9 @@ import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.entity.blockling.task.BlocklingTasks;
 import com.willr27.blocklings.entity.blockling.task.Task;
 import com.willr27.blocklings.util.BlocklingsComponent;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -101,13 +101,13 @@ public class TaskControl extends Control
             }
 
             @Override
-            public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTextureAsBackground(matrixStack, iconTexture);
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTooltip(matrixStack, mouseX, mouseY, getPixelScaleX(), getPixelScaleY(), new BlocklingsComponent("task.ui.configure"));
             }
@@ -132,7 +132,7 @@ public class TaskControl extends Control
         GridPanel taskNameBackgroundGrid = new GridPanel()
         {
             @Override
-            public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTextureAsBackground(matrixStack, Textures.Tasks.TASK_NAME_BACKGROUND);
             }
@@ -155,7 +155,7 @@ public class TaskControl extends Control
         Control stateIconControl = new TexturedControl(Textures.Common.NODE_UNPRESSED, Textures.Common.NODE_PRESSED)
         {
             @Override
-            public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (task.isConfigured())
                 {
@@ -190,7 +190,7 @@ public class TaskControl extends Control
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (task.isConfigured())
                 {
@@ -235,7 +235,7 @@ public class TaskControl extends Control
             @Override
             public void onTick()
             {
-                setText(new Component(task.getCustomName()));
+                setText(Component.literal(task.getCustomName()));
             }
 
             @Override
@@ -254,7 +254,7 @@ public class TaskControl extends Control
         Control removeControl = new TexturedControl(Textures.Tasks.TASK_REMOVE_ICON)
         {
             @Override
-            protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (isPressed() && !isDragging() && getPressedBackgroundTexture() != null)
                 {
@@ -267,7 +267,7 @@ public class TaskControl extends Control
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 renderTooltip(matrixStack, mouseX, mouseY, new BlocklingsComponent("task.ui.remove"));
             }
@@ -290,10 +290,10 @@ public class TaskControl extends Control
     }
 
     @Override
-    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
     {
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
-        tooltip.add(new Component(TextFormatting.GOLD + task.getCustomName()).getVisualOrderText());
+        List<FormattedCharSequence> tooltip = new ArrayList<>();
+        tooltip.add(Component.literal(ChatFormatting.GOLD + task.getCustomName()).getVisualOrderText());
         tooltip.addAll(GuiUtil.get().split(task.getType().desc, 200).stream().collect(Collectors.toList()));
 
         renderTooltip(matrixStack, mouseX, mouseY, tooltip);

@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static net.minecraft.client.gui.widget.Widget.WIDGETS_LOCATION;
+import static net.minecraft.client.gui.components.AbstractWidget.WIDGETS_LOCATION;
 
 /**
  * A collection of all gui textures used.

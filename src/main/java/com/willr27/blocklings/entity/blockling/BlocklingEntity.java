@@ -1166,7 +1166,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
 
         if (!hasCustomName())
         {
-            setCustomName(new Component("Blockling"), true);
+            setCustomName(Component.literal("Blockling"), true);
         }
     }
 
@@ -1335,7 +1335,7 @@ public class BlocklingEntity extends TamableAnimal implements IReadWriteNBT
                 return false;
             }
 
-            for (BiPredicate<BlocklingEntity, IWorld> predicate : getBlocklingType().spawnPredicates)
+            for (BiPredicate<BlocklingEntity, Level> predicate : getBlocklingType().spawnPredicates)
             {
                 if (!predicate.test(this, world))
                 {

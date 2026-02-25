@@ -6,14 +6,12 @@ import com.willr27.blocklings.client.gui.control.Control;
 import com.willr27.blocklings.client.gui.util.GuiUtil;
 import com.willr27.blocklings.client.gui.util.ScissorStack;
 import com.willr27.blocklings.util.DoubleUtil;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.core.vector.Matrix4f;
-import net.minecraft.network.chat.ITextComponent;
-import net.minecraft.network.chat.LanguageMap;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +25,7 @@ public class TextBlockControl extends Control
      * The text component to render.
      */
     @Nonnull
-    private ITextComponent text = new Component("");
+    private Component text = Component.literal("");
 
     /**
      * Whether to trim the text to fit the width of the control.
@@ -107,7 +105,7 @@ public class TextBlockControl extends Control
     }
 
     @Override
-    public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+    public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
     {
         super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
 
@@ -124,18 +122,8 @@ public class TextBlockControl extends Control
 
         float z = isDraggingOrAncestor() ? (float) getDraggedControl().getDragZ() : (float) getRenderZ();
 
-        try
-        {
-            // For some reason we can't just access the values in the matrix.
-            // So we have to get the z translation via reflection. Nice.
-            z = ObfuscationReflectionHelper.getPrivateValue(Matrix4f.class, matrixStack.last().pose(), "m23");
-        }
-        catch (Exception ex)
-        {
-//            Blocklings.LOGGER.warn(ex.toString());
-        }
 
-        MatrixStack matrixStack2 = new MatrixStack();
+        PoseStack matrixStack2 = new PoseStack();
         matrixStack2.translate(x, y, z);
         matrixStack2.scale((float) getScaleX(), (float) getScaleY(), 1.0f);
 
@@ -170,13 +158,13 @@ public class TextBlockControl extends Control
     /**
      * @return gets the text to render (e.g. might be trimmed to fit).
      */
-    public IReorderingProcessor getTextToRender()
+    public FormattedCharSequence getTextToRender()
     {
-        IReorderingProcessor textToRender = text.getVisualOrderText();
+        FormattedCharSequence textToRender = text.getVisualOrderText();
 
         if (shouldTrimText())
         {
-            textToRender = LanguageMap.getInstance().getVisualOrder(GuiUtil.get().trimWithEllipsis(getText(), (int) Math.round(getWidthWithoutPadding())));
+            textToRender = Language.getInstance().getVisualOrder(GuiUtil.get().trimWithEllipsis(getText(), (int) Math.round(getWidthWithoutPadding())));
         }
 
         return textToRender;
@@ -195,7 +183,7 @@ public class TextBlockControl extends Control
      * @return the text to render.
      */
     @Nonnull
-    public ITextComponent getText()
+    public Component getText()
     {
         return text;
     }
@@ -207,7 +195,7 @@ public class TextBlockControl extends Control
      */
     public void setText(@Nonnull String text)
     {
-        this.text = new Component(text);
+        this.text = Component.literal(text);
     }
 
     /**
@@ -215,7 +203,7 @@ public class TextBlockControl extends Control
      *
      * @param text the text to render.
      */
-    public void setText(@Nonnull ITextComponent text)
+    public void setText(@Nonnull Component text)
     {
         this.text = text;
     }

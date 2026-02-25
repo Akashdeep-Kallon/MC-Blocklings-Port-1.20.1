@@ -5,7 +5,7 @@ import com.willr27.blocklings.entity.blockling.BlocklingEntity;
 import com.willr27.blocklings.entity.blockling.attribute.IModifier;
 import com.willr27.blocklings.entity.blockling.attribute.ModifiableAttribute;
 import com.willr27.blocklings.entity.blockling.attribute.Operation;
-import net.minecraft.world.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,7 +66,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
     {
         if (vanillaAttribute != null)
         {
-            ModifiableAttributeInstance vanillaAttributeInstance = blockling.getAttribute(vanillaAttribute);
+            AttributeInstance vanillaAttributeInstance = blockling.getAttribute(vanillaAttribute);
 
             if (this instanceof IModifier)
             {
@@ -89,7 +89,7 @@ public abstract class ModifiableNumberAttribute<T extends Number> extends Modifi
             return;
         }
 
-        ModifiableAttributeInstance vanillaAttributeInstance = blockling.getAttribute(vanillaAttribute);
+        AttributeInstance vanillaAttributeInstance = blockling.getAttribute(vanillaAttribute);
 
         // If this attribute is a modifier then add it to the vanilla attribute as a transient modifier.
         if (this instanceof IModifier)

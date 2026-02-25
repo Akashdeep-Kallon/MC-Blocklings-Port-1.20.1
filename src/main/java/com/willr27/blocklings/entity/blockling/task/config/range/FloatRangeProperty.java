@@ -8,10 +8,10 @@ import com.willr27.blocklings.entity.blockling.goal.BlocklingGoal;
 import com.willr27.blocklings.util.Version;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,7 +33,7 @@ public class FloatRangeProperty extends RangeProperty<Float>
      * @param max           the maximum value of the range.
      * @param startingValue the range starting value.
      */
-    public FloatRangeProperty(@Nonnull String id, @Nonnull BlocklingGoal goal, @Nonnull ITextComponent name, @Nonnull ITextComponent desc, float min, float max, float startingValue)
+    public FloatRangeProperty(@Nonnull String id, @Nonnull BlocklingGoal goal, @Nonnull Component name, @Nonnull Component desc, float min, float max, float startingValue)
     {
         super(id, goal, name, desc, min, max, startingValue);
     }
@@ -82,12 +82,12 @@ public class FloatRangeProperty extends RangeProperty<Float>
         FloatRangeControl range = new FloatRangeControl(min, max, value)
         {
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (!grabberControl.isPressed())
                 {
-                    List<IReorderingProcessor> tooltip = GuiUtil.get().split(desc.copy().withStyle(TextFormatting.GRAY), 200);
-                    tooltip.add(0, name.copy().withStyle(TextFormatting.WHITE).getVisualOrderText());
+                    List<FormattedCharSequence> tooltip = GuiUtil.get().split(desc.copy().withStyle(ChatFormatting.GRAY), 200);
+                    tooltip.add(0, name.copy().withStyle(ChatFormatting.WHITE).getVisualOrderText());
 
                     renderTooltip(matrixStack, mouseX, mouseY, tooltip);
                 }

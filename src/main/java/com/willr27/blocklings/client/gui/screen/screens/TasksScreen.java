@@ -28,10 +28,10 @@ import com.willr27.blocklings.entity.blockling.task.Task;
 import com.willr27.blocklings.entity.blockling.task.TaskType;
 import com.willr27.blocklings.entity.blockling.task.config.Property;
 import com.willr27.blocklings.util.BlocklingsComponent;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -134,7 +134,7 @@ public class TasksScreen extends TabbedScreen
         TexturedControl addTaskButton = new TexturedControl(Textures.Common.PLUS_ICON)
         {
             @Override
-            protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+            protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
             {
                 if (blockling.getTasks().isTaskListFull())
                 {
@@ -147,11 +147,11 @@ public class TasksScreen extends TabbedScreen
             }
 
             @Override
-            public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+            public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
             {
-                List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(new BlocklingsComponent("task.ui.add").withStyle(blockling.getTasks().isTaskListFull() ? TextFormatting.GRAY : TextFormatting.WHITE).getVisualOrderText());
-                tooltip.add(new BlocklingsComponent("task.ui.task_amount", blockling.getTasks().getPrioritisedTasks().size(), BlocklingTasks.MAX_TASKS).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                List<FormattedCharSequence> tooltip = new ArrayList<>();
+                tooltip.add(new BlocklingsComponent("task.ui.add").withStyle(blockling.getTasks().isTaskListFull() ? ChatFormatting.GRAY : ChatFormatting.WHITE).getVisualOrderText());
+                tooltip.add(new BlocklingsComponent("task.ui.task_amount", blockling.getTasks().getPrioritisedTasks().size(), BlocklingTasks.MAX_TASKS).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                 renderTooltip(matrixStack, mouseX, mouseY, tooltip);
             }
 
@@ -286,9 +286,9 @@ public class TasksScreen extends TabbedScreen
 
         for (TaskType taskType : BlocklingTasks.TASK_TYPES.stream().filter(t -> blockling.getTasks().taskTypeUnlockedMap.get(t)).collect(Collectors.toList()))
         {
-            List<IReorderingProcessor> tooltip = new ArrayList<>();
-            tooltip.add(taskType.name.copy().withStyle(TextFormatting.GOLD).getVisualOrderText());
-            tooltip.addAll(GuiUtil.get().split(taskType.desc.getString(), 200).stream().map(s -> new Component(s).getVisualOrderText()).collect(Collectors.toList()));
+            List<FormattedCharSequence> tooltip = new ArrayList<>();
+            tooltip.add(taskType.name.copy().withStyle(ChatFormatting.GOLD).getVisualOrderText());
+            tooltip.addAll(GuiUtil.get().split(taskType.desc.getString(), 200).stream().map(s -> Component.literal(s).getVisualOrderText()).collect(Collectors.toList()));
             ComboBoxControl.Item item = new ComboBoxControl.Item(taskType.name, taskType, taskType.texture.dx(1).dy(1).dWidth(-2).dHeight(-2), tooltip);
 
             if (taskType == task.getType())
@@ -301,8 +301,8 @@ public class TasksScreen extends TabbedScreen
             }
         }
 
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
-        tooltip.add(BlocklingTasks.NULL.name.copy().withStyle(TextFormatting.GOLD).getVisualOrderText());
+        List<FormattedCharSequence> tooltip = new ArrayList<>();
+        tooltip.add(BlocklingTasks.NULL.name.copy().withStyle(ChatFormatting.GOLD).getVisualOrderText());
         ComboBoxControl.Item item = new ComboBoxControl.Item(BlocklingTasks.NULL.name, BlocklingTasks.NULL, BlocklingTasks.NULL.texture.dx(1).dy(1).dWidth(-2).dHeight(-2), tooltip);
 
         if (BlocklingTasks.NULL == task.getType())

@@ -38,11 +38,11 @@ public class NullableIntFieldControl extends TextFieldControl
     }
 
     @Override
-    public void onRenderTooltip(@Nonnull MatrixStack matrixStack, double mouseX, double mouseY, float partialTicks)
+    public void onRenderTooltip(@Nonnull PoseStack matrixStack, double mouseX, double mouseY, float partialTicks)
     {
         if (isTextTrimmed())
         {
-            renderTooltip(matrixStack, mouseX, mouseY, new Component(getText()));
+            renderTooltip(matrixStack, mouseX, mouseY, Component.literal(getText()));
         }
     }
 
@@ -183,6 +183,6 @@ public class NullableIntFieldControl extends TextFieldControl
      */
     public boolean isTextTrimmed()
     {
-        return !GuiUtil.get().trim(new Component(getText()), (int) getWidthWithoutPadding()).getString().equals(getText());
+        return !GuiUtil.get().trim(Component.literal(getText()), (int) getWidthWithoutPadding()).getString().equals(getText());
     }
 }

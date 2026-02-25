@@ -12,11 +12,11 @@ import com.willr27.blocklings.client.gui.util.ScissorStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.core.vector.Matrix4f;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -36,7 +36,7 @@ public class TextFieldControl extends Control
      * The underlying {@link TextFieldWidget};
      */
     @Nonnull
-    protected final TextFieldWidget textFieldWidget = new TextFieldWidget(Minecraft.getInstance().font, 0, 0, 100, GuiUtil.get().getLineHeight() - 1, new Component("message?"));
+    protected final TextFieldWidget textFieldWidget = new TextFieldWidget(Minecraft.getInstance().font, 0, 0, 100, GuiUtil.get().getLineHeight() - 1, Component.literal("message?"));
 
     /**
      * The amount to offset the text field's x position by.
@@ -105,7 +105,7 @@ public class TextFieldControl extends Control
     }
 
     @Override
-    public void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+    public void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
     {
         // This would be better done using events, but there aren't currently events for when pixel sizes and positions change.
         recalcTextFieldWidget();
@@ -130,7 +130,7 @@ public class TextFieldControl extends Control
 //            Blocklings.LOGGER.warn(ex.toString());
         }
 
-        MatrixStack textFieldMatrixStack = new MatrixStack();
+        PoseStack textFieldMatrixStack = new PoseStack();
         textFieldMatrixStack.translate(textFieldXRemainder, textFieldYRemainder, z);
         textFieldWidget.renderButton(textFieldMatrixStack, (int) Math.round(mouseX), (int) Math.round(mouseY), partialTicks);
         RenderSystem.enableDepthTest();
@@ -281,7 +281,7 @@ public class TextFieldControl extends Control
         eventBus.post(this, new TextChangedEvent(oldText, text));
     }
 
-    public void setText(@Nonnull ITextComponent text)
+    public void setText(@Nonnull Component text)
     {
         setText(text.getString());
     }

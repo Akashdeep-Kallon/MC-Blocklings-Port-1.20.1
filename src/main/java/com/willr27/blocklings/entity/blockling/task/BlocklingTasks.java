@@ -26,13 +26,13 @@ import com.willr27.blocklings.util.event.EventHandler;
 import com.willr27.blocklings.util.event.HandleableEvent;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.world.entity.ai.goal.SwimGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -132,19 +132,19 @@ public class BlocklingTasks implements IReadWriteNBT
      */
     public void reapplyGoals()
     {
-        Set<PrioritizedGoal> goals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, goalSelector, "field_220892_d");
-        Set<PrioritizedGoal> targets = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, targetSelector, "field_220892_d");
-        goals.forEach(PrioritizedGoal::stop);
+        Set<WrappedGoal> goals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, goalSelector, "field_220892_d");
+        Set<WrappedGoal> targets = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, targetSelector, "field_220892_d");
+        goals.forEach(WrappedGoal::stop);
         goals.clear();
-        targets.forEach(PrioritizedGoal::stop);
+        targets.forEach(WrappedGoal::stop);
         targets.clear();
 
-        Map<Goal.Flag, PrioritizedGoal> goalLockedFlags  = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, goalSelector, "field_220891_c");
-        Map<Goal.Flag, PrioritizedGoal> targetLockedFlags  = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, targetSelector, "field_220891_c");
+        Map<Goal.Flag, WrappedGoal> goalLockedFlags  = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, goalSelector, "field_220891_c");
+        Map<Goal.Flag, WrappedGoal> targetLockedFlags  = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, targetSelector, "field_220891_c");
         goalLockedFlags.clear();
         targetLockedFlags.clear();
 
-        goalSelector.addGoal(0, new SwimGoal(blockling));
+        goalSelector.addGoal(0, new FloatGoal(blockling));
 
         for (Task task : prioritisedTasks)
         {

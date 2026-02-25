@@ -20,7 +20,7 @@ import net.minecraft.core.vector.Vector3f;
 import net.minecraft.core.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 
@@ -97,7 +97,7 @@ public class BlockControl extends Control
     }
 
     @Override
-    protected void onRender(@Nonnull MatrixStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
+    protected void onRender(@Nonnull PoseStack matrixStack, @Nonnull ScissorStack scissorStack, double mouseX, double mouseY, float partialTicks)
     {
         super.onRender(matrixStack, scissorStack, mouseX, mouseY, partialTicks);
 
@@ -155,7 +155,7 @@ public class BlockControl extends Control
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
         RenderSystem.scalef(scale, scale, scale);
 
-        MatrixStack blockMatrixStack = new MatrixStack();
+        PoseStack blockMatrixStack = new PoseStack();
         blockMatrixStack.translate(extraX, -extraY, 0.0);
         blockMatrixStack.mulPose(rotationQuat);
         blockMatrixStack.mulPose(Vector3f.YP.rotationDegrees(getBlockState().getRenderShape() == BlockRenderType.MODEL ? 180.0f : 0.0f));

@@ -15,7 +15,7 @@ import com.willr27.blocklings.util.IReadWriteNBT;
 import com.willr27.blocklings.util.Version;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -316,7 +316,7 @@ public class BlocklingAttributes implements IReadWriteNBT
      */
     public void applyVanillaModifier(@Nonnull net.minecraft.world.entity.ai.attributes.Attribute vanillaAttribute, @Nonnull FloatAttributeModifier modifier)
     {
-        ModifiableAttributeInstance attributeInstance = blockling.getAttribute(vanillaAttribute);
+        AttributeInstance attributeInstance = blockling.getAttribute(vanillaAttribute);
 
         // Remove the modifier it exists as you can't just set the value again.
         attributeInstance.removeModifier(modifier.id);

@@ -10,7 +10,7 @@ import com.willr27.blocklings.util.event.EventHandler;
 import com.willr27.blocklings.util.event.IEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class PatrolTypeProperty extends Property
      * @param name the name of the property.
      * @param desc the description of the property.
      */
-    public PatrolTypeProperty(@Nonnull String id, @Nonnull BlocklingGoal goal, @Nonnull ITextComponent name, @Nonnull ITextComponent desc)
+    public PatrolTypeProperty(@Nonnull String id, @Nonnull BlocklingGoal goal, @Nonnull Component name, @Nonnull Component desc)
     {
         super(id, goal, name, desc);
     }
